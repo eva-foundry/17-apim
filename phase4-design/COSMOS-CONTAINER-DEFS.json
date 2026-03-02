@@ -1,0 +1,67 @@
+{
+  "containers": [
+    {
+      "name": "sessions",
+      "partitionKey": "/userId",
+      "throughput": 400,
+      "indexes": [
+        {"path": "/userId", "order": "asc"},
+        {"path": "/updatedAt", "order": "desc"}
+      ],
+      "notes": "Session metadata. Embed small messages if expected < 200 messages per session."
+    },
+    {
+      "name": "chatturns",
+      "partitionKey": "/sessionId",
+      "throughput": 400,
+      "indexes": [
+        {"path": "/sessionId", "order": "asc"},
+        {"path": "/createdAt", "order": "asc"}
+      ],
+      "notes": "Message records when unbounded; keep text previews small." 
+    },
+    {
+      "name": "documents",
+      "partitionKey": "/ownerId",
+      "throughput": 400,
+      "indexes": [
+        {"path": "/ownerId", "order": "asc"},
+        {"path": "/ingestStatus", "order": "asc"}
+      ],
+      "notes": "Store metadata only; actual file content in Blob Storage." 
+    },
+    {
+      "name": "indexentries",
+      "partitionKey": "/docId",
+      "throughput": 400,
+      "notes": "Pointers from doc chunks to cognitive search/vector index." 
+    },
+    {
+      "name": "groupmapping",
+      "partitionKey": "/groupId",
+      "throughput": 400,
+      "notes": "RBAC mapping; cached in-memory with TTL on app startup." 
+    },
+    {
+      "name": "processingjobs",
+      "partitionKey": "/docId",
+      "throughput": 400,
+      "notes": "Background pipeline job state; partition by docId for targeted updates." 
+    },
+    {
+      "name": "auditlog",
+      "partitionKey": "/resourceId",
+      "throughput": 400,
+      "notes": "Immutable audit events; consider export to blob for long-term retention." 
+    }
+  ],
+  "recommendations": {
+    "maxItemSize": "Do not store >2MB in Cosmos. Store vectors in Search or external vector DB.",
+    "ttl": {
+      "sessions": "7d-30d configurable",
+      "processingjobs": "90d optional"
+    },
+    "ruGuidance": "Start at 400 RU per container for low volume; scale to 1000+ for heavy write workloads.",
+    "indexing": "Add composite indexes for (userId, updatedAt) and for query patterns that filter by status. Use Search for global discovery queries to avoid cross-partition scans."
+  }
+}

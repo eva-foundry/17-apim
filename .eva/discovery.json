@@ -1,0 +1,1019 @@
+{
+  "meta": {
+    "schema": "eva.discovery.v2",
+    "generated_at": "2026-02-25T06:37:11.635Z",
+    "repo": "C:\\AICOE\\eva-foundation\\17-apim"
+  },
+  "project": null,
+  "planned": {
+    "epic": {
+      "title": "OVERVIEW: Getting APIM into InfoJP PoC",
+      "source": "README.md"
+    },
+    "features": [
+      {
+        "id": "F17-01",
+        "title": "?? PROJECT STATUS DASHBOARD",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-02",
+        "title": "Executive Summary",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-03",
+        "title": "Phase 3: APIM Design & Setup (2-3 weeks, 44-60 hours)",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-04",
+        "title": "Phase 4: Backend Middleware & Header Propagation (2 weeks, 40-56 hours)",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-05",
+        "title": "Phase 5: Testing & Cutover (1 week, 40-56 hours)",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-06",
+        "title": "Master Timeline & Sequencing",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-07",
+        "title": "Critical Path & Risk Mitigation",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-08",
+        "title": "Definition of Done (Project-Level)",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-09",
+        "title": "Acceptance Criteria",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-10",
+        "title": "Owner & Team Composition",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-11",
+        "title": "Success Metrics (Post-Go-Live)",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-12",
+        "title": "Next Steps (Immediate)",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-13",
+        "title": "Reference Documents",
+        "source": "veritas-plan.json"
+      }
+    ],
+    "stories": [
+      {
+        "id": "F17-01-001",
+        "title": "Phase Completion Matrix",
+        "feature_id": "F17-01",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-01-002",
+        "title": "Critical Findings Impact",
+        "feature_id": "F17-01",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-01-003",
+        "title": "Current Blockers & Risks",
+        "feature_id": "F17-01",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-01-004",
+        "title": "Next Milestone: Phase 3A Kickoff",
+        "feature_id": "F17-01",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-03-001",
+        "title": "Phase 3A: Generate OpenAPI Specification",
+        "feature_id": "F17-03",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-03-002",
+        "title": "Phase 3B: Design APIM Policies",
+        "feature_id": "F17-03",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-03-003",
+        "title": "Phase 3C: Create Deployment & Cutover Plan",
+        "feature_id": "F17-03",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-03-004",
+        "title": "Phase 3 Summary Table",
+        "feature_id": "F17-03",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-04-001",
+        "title": "Phase 4A: Governance Logging Middleware",
+        "feature_id": "F17-04",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-04-002",
+        "title": "Phase 4B: Authorization Enforcement Middleware",
+        "feature_id": "F17-04",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-04-003",
+        "title": "Phase 4C: Cosmos DB Schema Extension",
+        "feature_id": "F17-04",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-04-004",
+        "title": "Phase 4D: Cost Attribution Queries (KQL/SQL)",
+        "feature_id": "F17-04",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-04-005",
+        "title": "Phase 4 Summary Table",
+        "feature_id": "F17-04",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-05-001",
+        "title": "Phase 5A: Integration Testing",
+        "feature_id": "F17-05",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-05-002",
+        "title": "Phase 5B: Performance Testing",
+        "feature_id": "F17-05",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-05-003",
+        "title": "Phase 5C: User Acceptance Testing (UAT)",
+        "feature_id": "F17-05",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-05-004",
+        "title": "Phase 5D: Go-Live Cutover & Monitoring",
+        "feature_id": "F17-05",
+        "source": "veritas-plan.json"
+      },
+      {
+        "id": "F17-05-005",
+        "title": "Phase 5 Summary Table",
+        "feature_id": "F17-05",
+        "source": "veritas-plan.json"
+      }
+    ],
+    "tasks": [],
+    "acceptance": [],
+    "declared_status": {}
+  },
+  "actual": {
+    "artifacts": [
+      {
+        "path": ".gitignore",
+        "type": "other",
+        "story_tags": []
+      },
+      {
+        "path": "09-openapi-spec.json",
+        "type": "data",
+        "story_tags": []
+      },
+      {
+        "path": "CRITICAL-FINDINGS-SDK-REFACTORING.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "HOUSEKEEPING-COMPLETION-REPORT.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "HOUSEKEEPING-PREVIEW.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "HOUSEKEEPING-SCRIPT.ps1",
+        "type": "code",
+        "story_tags": [
+          "F17-01-001",
+          "F17-01-002",
+          "F17-01-003",
+          "F17-01-004",
+          "F17-03-001",
+          "F17-03-002",
+          "F17-03-003",
+          "F17-03-004",
+          "F17-04-001",
+          "F17-04-002",
+          "F17-04-003",
+          "F17-04-004",
+          "F17-04-005",
+          "F17-05-001",
+          "F17-05-002",
+          "F17-05-003",
+          "F17-05-004",
+          "F17-05-005"
+        ]
+      },
+      {
+        "path": "INDEX.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "PLAN.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "PLAN.md.bak",
+        "type": "other",
+        "story_tags": []
+      },
+      {
+        "path": "QUICK-REFERENCE.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "README.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "STATUS.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "diagrams/01-current-architecture.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "diagrams/02-target-apim-architecture.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "diagrams/03-header-flow.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "diagrams/04-authentication-flow.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "diagrams/README.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase1-stack/01-stack-evidence.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase1-stack/02-scan-command-plan.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase1-stack/03-inspection-priority.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/01-api-call-inventory.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/02-auth-and-identity.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/03-config-and-base-urls.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/04-streaming-analysis.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/05-header-contract-draft.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/APPENDIX-A-Azure-SDK-Clients.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/APPENDIX-SCAN-SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/INDEX.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-deliverables/10-apim-policies.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-deliverables/10-apim-policies.xml",
+        "type": "other",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-deliverables/11-deployment-plan.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/08-CONFIGURATION-AS-DATA-DESIGN.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/COSMOS-CONTAINER-DEFS.json",
+        "type": "data",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/DATA-MODEL-DISCOVERY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/DATA-MODEL-NOTE.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/PHASE4-COMPLETE-SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/PHASE4-PROGRESS.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/RESILIENCE-IMPLEMENTATION-SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/TELEMETRY-IMPLEMENTATION-SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-validation/07-PHASE3-VALIDATION-REPORT.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-validation/PHASE-3-COMPLETE.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-validation/PHASE-3A-COMPLETION.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase3-validation/PHASE3-COMPLETION-REPORT.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/01-PHASE1-STACK-EVIDENCE.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/02-PHASE2A-API-INVENTORY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/03-PHASE2B-RBAC-AUTH-FLOW.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/04-PHASE2C-ENVIRONMENT-VARIABLES.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/05-PHASE2D-STREAMING-ANALYSIS.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/06-PHASE2E-SDK-INTEGRATION.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/PHASE2D-COMPLETION-REPORT.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/eva-jp-specific/PHASE2E-COMPLETION-REPORT.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/verification/API-ENDPOINT-VERIFICATION.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/verification/ENDPOINT-VERIFICATION-SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase2-analysis/verification/HEADER-UPDATE-SUMMARY.md",
+        "type": "doc",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/schemas/chatturn.schema.json",
+        "type": "data",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/schemas/document.schema.json",
+        "type": "data",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/schemas/groupmapping.schema.json",
+        "type": "data",
+        "story_tags": []
+      },
+      {
+        "path": "phase4-design/schemas/session.schema.json",
+        "type": "data",
+        "story_tags": []
+      }
+    ],
+    "story_artifact_map": {
+      "F17-01-001": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-01-002": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-01-003": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-01-004": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-03-001": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-03-002": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-03-003": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-03-004": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-04-001": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-04-002": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-04-003": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-04-004": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-04-005": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-05-001": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-05-002": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-05-003": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-05-004": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      },
+      "F17-05-005": {
+        "artifacts": [
+          {
+            "path": "HOUSEKEEPING-SCRIPT.ps1",
+            "type": "code",
+            "story_tags": [
+              "F17-01-001",
+              "F17-01-002",
+              "F17-01-003",
+              "F17-01-004",
+              "F17-03-001",
+              "F17-03-002",
+              "F17-03-003",
+              "F17-03-004",
+              "F17-04-001",
+              "F17-04-002",
+              "F17-04-003",
+              "F17-04-004",
+              "F17-04-005",
+              "F17-05-001",
+              "F17-05-002",
+              "F17-05-003",
+              "F17-05-004",
+              "F17-05-005"
+            ]
+          }
+        ]
+      }
+    },
+    "commit_evidence_map": {}
+  }
+}

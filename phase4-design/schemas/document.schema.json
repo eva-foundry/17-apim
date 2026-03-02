@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Document",
+  "type": "object",
+  "required": ["id", "ownerId", "filename", "blobPath", "sizeBytes", "createdAt"],
+  "properties": {
+    "id": {"type": "string"},
+    "ownerId": {"type": "string"},
+    "filename": {"type": "string"},
+    "blobPath": {"type": "string"},
+    "sizeBytes": {"type": "integer"},
+    "contentType": {"type": "string"},
+    "ingestStatus": {"type": "string"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "tags": {"type": "array", "items": {"type": "string"}},
+    "sha256": {"type": "string"}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GroupMapping",
+  "type": "object",
+  "required": ["groupId", "groupName"],
+  "properties": {
+    "groupId": {"type": "string"},
+    "groupName": {"type": "string"},
+    "availableResources": {"type": "array", "items": {"type": "string"}},
+    "lastSyncedAt": {"type": "string", "format": "date-time"}
+  }
+}

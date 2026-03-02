@@ -1,0 +1,708 @@
+# PLAN: APIM Integration Execution (Phases 3-5)
+
+**Document ID**: PLAN.md  
+**Status**: 🔄 Active Execution Plan  
+**Last Updated**: 2026-01-28  
+**Timeline**: Phases 3-5 over 6-8 weeks  
+**Total Remaining Effort**: 124-172 hours  
+**Risk Level**: Low-to-Medium (architecture proven, implementation straightforward)
+
+---
+
+## 📊 PROJECT STATUS DASHBOARD
+
+**Last Updated**: 2026-01-28  
+**Overall Status**: 🟢 **READY FOR PHASE 3 EXECUTION**  
+**Completion**: Phases 1-2 Complete (212+ hours) | Phases 3-5 Planned (124-172 hours)
+
+### Phase Completion Matrix
+
+| Phase | Status | Effort | Timeline | Key Deliverables | Evidence |
+|-------|--------|--------|----------|------------------|----------|
+| **Phase 1: Stack Evidence** | ✅ **COMPLETE** | 40+ hours | Week 1 (Jan 2026) | Stack identification, scan commands, inspection priorities | [evidences/](./evidences/) (3 files) |
+| **Phase 2: Analysis** | ✅ **COMPLETE** | 172+ hours | Weeks 2-3 (Jan 2026) | API inventory (20+ endpoints), auth analysis, config mapping, streaming analysis, header contract, SDK deep dive | [docs/apim-scan/](./docs/apim-scan/) (8 files, 8,000+ lines) |
+| **Phase 3: APIM Design** | 🔵 **PLANNED** | 44-60 hours | Weeks 4-5 | OpenAPI spec, APIM policies, deployment plan | Sections below |
+| **Phase 4: Backend Middleware** | 🔵 **PLANNED** | 40-56 hours | Weeks 4-5 (parallel) | Governance logging, authorization, Cosmos schema, cost queries | Sections below |
+| **Phase 5: Testing & Deployment** | 🔵 **PLANNED** | 40-56 hours | Week 6 | Integration tests, load tests, UAT, go-live | Sections below |
+
+### Critical Findings Impact
+
+- ⚠️ **150+ Azure SDK calls** across 15+ files (deeply integrated)
+- ⚠️ **APIM cannot intercept SDK calls** (SDKs bypass HTTP proxies)
+- ⚠️ **Refactoring NOT viable**: 270-410 hours, high risk, minimal benefit
+- ✅ **Recommended approach**: Backend Middleware (20-30 hours, low risk)
+
+### Current Blockers & Risks
+
+| Risk | Severity | Mitigation | Owner | Status |
+|------|----------|------------|-------|--------|
+| **User Auth Missing** | 🔴 HIGH | Phase 4B (Authorization Enforcement) | Backend Team | Planned |
+| **Streaming through APIM** | 🟡 MEDIUM | Explicit `buffering=false` policy | APIM Specialist | Planned |
+| **Cosmos DB Throughput** | 🟡 MEDIUM | Start with 10k RU, monitor, scale | DevOps | Planned |
+| **Traffic Cutover** | 🟡 MEDIUM | DNS-based cutover (easy rollback) | DevOps | Planned |
+
+### Next Milestone: Phase 3A Kickoff
+
+**Target Date**: Week of Feb 3, 2026  
+**Deliverable**: [09-openapi-spec.yaml](./09-openapi-spec.yaml)  
+**Owner**: Architect + Backend Developer  
+**Prerequisites**: ✅ All Phase 2 analysis complete  
+**Dependencies**: Phase 2 [01-api-call-inventory.md](./docs/apim-scan/01-api-call-inventory.md) (20+ endpoints documented)
+
+---
+
+## Executive Summary
+
+**Phases 1-2 Complete**: 212+ hours of research, 145+ evidence items, 8,000+ lines of analysis completed across 23 deliverable files.
+
+**Current State**: Full technical foundation established. All Phase 1-2 deliverables (evidences/ + docs/apim-scan/) provide evidence-backed inventory, auth analysis, configuration mapping, streaming patterns, and header contract design.
+
+**This Plan Covers**: Phases 3-5 (APIM design → backend middleware implementation → deployment cutover). Estimated 6-8 weeks, low-to-medium risk.
+
+**Critical Decision**: Use **backend middleware + Azure Monitor approach** (1 week, low risk) rather than SDK refactoring (270-410 hours, high risk). APIM cannot intercept Azure SDK calls due to architectural constraints (SDKs handle auth internally, bypass HTTP proxies).
+
+**MVP Success Criteria**:
+1. ✅ All UI calls routed through APIM gateway
+2. ✅ Headers propagated and stored (X-Correlation-Id, X-Run-Id, X-Project-Id, X-User-Id, etc.)
+3. ✅ Cost attribution reports (OpenAI tokens, Search queries, Storage usage per run/variant)
+4. ✅ Authorization enforced (user can only call assigned projects)
+5. ✅ Governance metadata persisted to Cosmos DB for audit + cost tracking
+
+---
+
+## Phase 3: APIM Design & Setup (2-3 weeks, 44-60 hours)
+
+**Goal**: Design APIM gateway with policies and deployment strategy.
+
+### Phase 3A: Generate OpenAPI Specification
+
+**Task**: Extract FastAPI /docs OpenAPI spec and refine for APIM consumption.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | `09-openapi-spec.yaml` |
+| **Source Data** | FastAPI auto-generated docs endpoint + Phase 2 API Inventory (01-api-call-inventory.md) |
+| **Work Items** | <ul><li>Export FastAPI /docs endpoint (GET http://localhost:5000/docs → download JSON)</li><li>Validate 20+ endpoints documented in inventory</li><li>Add operationId for each endpoint (required by APIM)</li><li>Add security scheme (Bearer JWT for Entra ID)</li><li>Normalize response schemas (pagination, error models)</li><li>Add x-apim-policy headers for streaming endpoints (/chat, /stream, /tdstream)</li></ul> |
+| **Evidence Reference** | 01-api-call-inventory.md (endpoints table) |
+| **Effort** | 8-12 hours |
+| **Timeline** | 1-2 days |
+| **Owner** | Architect + Backend Developer |
+| **Dependencies** | Phase 2 (01-api-call-inventory.md) complete ✅ |
+| **Success Criteria** | <ul><li>All 20+ endpoints represented</li><li>Streaming (SSE) properly marked in spec</li><li>Security scheme defined</li><li>APIM can import without errors</li></ul> |
+
+**Implementation Notes**:
+- FastAPI provides `/openapi.json` endpoint; download and refine
+- Add `operationId` to match APIM policy references
+- Streaming endpoints (/stream, /tdstream) need `x-apim-policy: handle-streaming` annotation
+- Error schemas: 400 (bad request), 401 (unauthorized), 429 (rate limited), 500 (server error)
+- Reference: README.md Phase B (External Contract definition)
+
+---
+
+### Phase 3B: Design APIM Policies
+
+**Task**: Create policy definitions for rate limiting, JWT validation, header injection, and streaming.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | `10-apim-policies.xml` + `10-apim-policies.md` (explanation) |
+| **Work Items** | <ul><li>JWT validation policy (Entra ID token verification)</li><li>Rate limiting policy (per-user throttle: 100 req/min, per-app: 10,000 req/min)</li><li>Header injection policy (set X-Caller-App, X-Env, generate X-Correlation-Id)</li><li>Header override/strip policy (client cannot override X-User-Id, X-Cost-Center)</li><li>Streaming special handling (SSE requires no buffering, chunked responses)</li><li>CORS policy (allow frontend origin)</li><li>Request/response logging (to Application Insights)</li><li>Error response schema (consistent 400/401/429/500 handling)</li></ul> |
+| **Evidence Reference** | 05-header-contract-draft.md (header specification), 02-auth-and-identity.md (auth patterns) |
+| **Effort** | 12-16 hours |
+| **Timeline** | 3-4 days |
+| **Owner** | APIM Architect + Security Engineer |
+| **Dependencies** | Phase 3A (09-openapi-spec.yaml) complete |
+| **Success Criteria** | <ul><li>All policies compile in APIM</li><li>JWT validation tested with Entra ID tokens</li><li>Streaming endpoints tested (no buffering, SSE headers preserved)</li><li>Headers flow end-to-end (APIM → backend → Cosmos logs)</li><li>Rate limits enforced (429 responses when exceeded)</li></ul> |
+
+**Policy Template Structure**:
+```xml
+<!-- Applied to all operations -->
+<policies>
+  <inbound>
+    <jwt-validate-token .../>
+    <rate-limit-by-key .../>
+    <set-header name="X-Caller-App">InfoJP</set-header>
+    <set-header name="X-Correlation-Id" ... />
+  </inbound>
+  <backend>
+    <forward-request />
+  </backend>
+  <outbound>
+    <log-to-eventhub ... />
+  </outbound>
+  <on-error>
+    <choose>
+      <when condition="@(context.Response.StatusCode == 401)">
+        <!-- Return 401 with JSON schema -->
+      </when>
+    </choose>
+  </on-error>
+</policies>
+```
+
+**Streaming Policy Considerations**:
+- `/chat`: ndjson response, must NOT buffer (set `buffering=false`)
+- `/stream`, `/tdstream`: SSE response, preserve `Content-Type: text/event-stream`
+- APIM by default may buffer — must explicitly disable for real-time endpoints
+
+---
+
+### Phase 3C: Create Deployment & Cutover Plan
+
+**Task**: Document step-by-step APIM deployment and traffic cutover strategy.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | `11-deployment-plan.md` |
+| **Work Items** | <ul><li>APIM resource creation (name, tier, region, capacity planning)</li><li>API import (from 09-openapi-spec.yaml)</li><li>Policy assignment (from 10-apim-policies.xml)</li><li>Subscription/product setup (if using APIM subscriptions)</li><li>Backend configuration (API base URL, timeout, retry)</li><li>Diagnostic settings (Log Analytics, App Insights integration)</li><li>Traffic cutover strategy (3 options: config switch, DNS, dual-run)</li><li>Rollback procedures (revert to direct backend URL)</li><li>Go-live checklist (smoke tests, monitoring dashboards, on-call setup)</li></ul> |
+| **Evidence Reference** | README.md Phase D (Cutover Strategy), CRITICAL-FINDINGS (recommended approach) |
+| **Effort** | 12-16 hours |
+| **Timeline** | 3-4 days |
+| **Owner** | DevOps Engineer + Architect |
+| **Dependencies** | Phase 3A + 3B complete |
+| **Success Criteria** | <ul><li>Deployment automation ready (IaC for APIM resource)</li><li>Cutover plan tested in sandbox (dry-run successful)</li><li>Rollback procedure validated</li><li>Monitoring dashboards created</li></ul> |
+
+**Cutover Options** (ranked by simplicity):
+1. **Config Switch** (SIMPLEST): UI env var `API_BASE_URL` → APIM gateway URL, deploy frontend
+2. **DNS CNAME** (SAFER): infojp-api.sandbox.ms → APIM gateway hostname, no frontend code change
+3. **Dual-Run with Traffic Manager** (MOST FLEXIBLE): percentage routing, slow ramp-up (5% → 25% → 50% → 100%)
+
+**Recommended**: Option 2 (DNS) for zero frontend deploy + instant rollback (DNS revert in seconds).
+
+**Rollback Timing**: If issues detected within 1 hour of cutover, revert DNS or config immediately. Cosmos logs + APIM diagnostics capture all request/response data for post-mortem.
+
+---
+
+### Phase 3 Summary Table
+
+| Task | Effort | Days | Owner | Blocker |
+|------|--------|------|-------|---------|
+| 3A: OpenAPI Spec | 8-12 hrs | 1-2d | Architect + Dev | Phase 2 ✅ |
+| 3B: APIM Policies | 12-16 hrs | 3-4d | APIM Arch + Sec | Phase 3A ✅ |
+| 3C: Deploy/Cutover | 12-16 hrs | 3-4d | DevOps + Arch | Phase 3A + 3B |
+| **TOTAL PHASE 3** | **44-60 hrs** | **~2 weeks** | **Team of 3** | **None** |
+
+---
+
+## Phase 4: Backend Middleware & Header Propagation (2 weeks, 40-56 hours)
+
+**Goal**: Implement governance header extraction, logging, and cost attribution infrastructure.
+
+### Phase 4A: Governance Logging Middleware
+
+**Task**: Build FastAPI middleware to extract APIM headers and log to Cosmos DB.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Backend middleware in `app/backend/app.py` (new `middleware/governance_logging.py` module) |
+| **Work Items** | <ul><li>Create FastAPI middleware class</li><li>Extract headers: X-Correlation-Id, X-User-Id, X-Project-Id, X-Run-Id, X-Ingestion-Variant, X-Cost-Center, X-Caller-App, X-Env</li><li>Store in `request.state` for use in route handlers</li><li>Log to Cosmos DB `governance_requests` collection</li><li>Include: timestamp, headers, endpoint, method, status code, latency_ms, error details</li><li>Ensure correlation ID flows through to response headers</li></ul> |
+| **Evidence Reference** | 05-header-contract-draft.md (header specification), 02-auth-and-identity.md (auth context) |
+| **Effort** | 8-12 hours |
+| **Timeline** | 2-3 days |
+| **Owner** | Backend Developer |
+| **Dependencies** | Phase 3B (APIM policies defined) for expected header list |
+| **Success Criteria** | <ul><li>All headers extracted without errors</li><li>Cosmos logs created for every request</li><li>Correlation ID preserved in response</li><li>No performance degradation (<5ms overhead per request)</li><li>Local dev mode works (graceful if Cosmos unavailable)</li></ul> |
+
+**Implementation Sketch**:
+```python
+# middleware/governance_logging.py
+from fastapi import Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
+import uuid
+from datetime import datetime
+
+class GovernanceLoggingMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Extract/generate headers
+        correlation_id = request.headers.get(
+            "X-Correlation-Id", 
+            str(uuid.uuid4())
+        )
+        user_id = request.headers.get("X-User-Id", "anonymous")
+        project_id = request.headers.get("X-Project-Id", "unknown")
+        run_id = request.headers.get("X-Run-Id")
+        
+        # Store in request state
+        request.state.correlation_id = correlation_id
+        request.state.user_id = user_id
+        request.state.project_id = project_id
+        
+        # Call route handler
+        start = time.time()
+        response = await call_next(request)
+        duration_ms = (time.time() - start) * 1000
+        
+        # Log to Cosmos
+        log_entry = {
+            "id": str(uuid.uuid4()),
+            "timestamp": datetime.utcnow().isoformat(),
+            "correlation_id": correlation_id,
+            "user_id": user_id,
+            "project_id": project_id,
+            "run_id": run_id,
+            "endpoint": request.url.path,
+            "method": request.method,
+            "status_code": response.status_code,
+            "duration_ms": duration_ms,
+            "headers": dict(request.headers),
+        }
+        await cosmos_client.create_item(
+            database_id="conversations",
+            container_id="governance_requests",
+            item=log_entry
+        )
+        
+        # Add correlation ID to response
+        response.headers["X-Correlation-Id"] = correlation_id
+        return response
+```
+
+**Cosmos DB Schema** (new container: `governance_requests`):
+```json
+{
+  "id": "uuid",
+  "timestamp": "2026-01-25T10:30:00Z",
+  "correlation_id": "uuid",
+  "user_id": "entra-oid",
+  "project_id": "string",
+  "run_id": "string",
+  "ingestion_variant": "string",
+  "cost_center": "string",
+  "endpoint": "/chat",
+  "method": "POST",
+  "status_code": 200,
+  "duration_ms": 1250,
+  "error": null,
+  "caller_app": "InfoJP",
+  "env": "sandbox"
+}
+```
+
+---
+
+### Phase 4B: Authorization Enforcement Middleware
+
+**Task**: Add user authentication + project authorization checks.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Backend middleware `middleware/authorization.py` + route guards |
+| **Work Items** | <ul><li>Extract user from JWT claims (Entra ID `oid`)</li><li>Look up user → assigned projects (Cosmos DB `sandbox_users` table)</li><li>Validate `X-Project-Id` header matches user's assigned projects</li><li>Return 401 (unauthorized) if JWT invalid, 403 (forbidden) if project not assigned</li><li>Decorate protected endpoints with `@require_auth` + `@require_project_access`</li><li>Endpoints required: /chat, /stream, /tdstream, /file, /upload, /delete, /admin/* </li></ul> |
+| **Evidence Reference** | 02-auth-and-identity.md (currently no user auth, gap identified), README.md (sandbox user model) |
+| **Effort** | 8-12 hours |
+| **Timeline** | 2-3 days |
+| **Owner** | Backend Developer + Security Engineer |
+| **Dependencies** | Phase 4A (governance middleware in place), Phase 4C (Cosmos schema ready) |
+| **Critical** | 🔴 User auth not implemented in current codebase — this is required before public exposure |
+| **Success Criteria** | <ul><li>JWT validation works with Entra ID tokens</li><li>Project authorization enforced on protected endpoints</li><li>401/403 responses tested</li><li>Unprotected endpoints (health, /docs) remain accessible</li><li>Authorization errors logged with correlation_id</li></ul> |
+
+**Protected Endpoints** (require `X-Project-Id` + JWT):
+- POST /chat, GET /stream, GET /tdstream → user must be assigned to project
+- POST /file, POST /upload → user must be assigned to project
+- GET /documents → user must be assigned to project
+- POST /delete, POST /resubmit → user must be assigned to project
+
+**Unprotected Endpoints** (no auth required):
+- GET /health
+- GET /docs, /openapi.json (Swagger UI)
+- POST /feedback (optional: anonymous feedback)
+
+---
+
+### Phase 4C: Cosmos DB Schema Extension
+
+**Task**: Create new collections for user, project, and governance tracking.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Cosmos DB collections: `sandbox_users`, `projects`, `user_projects`, `governance_requests` |
+| **Work Items** | <ul><li>Create `sandbox_users` collection (partition key: `/entra_oid`)</li><li>Create `projects` collection (partition key: `/project_id`)</li><li>Create `user_projects` collection (partition key: `/user_oid`, stores user→project assignments)</li><li>Create `governance_requests` collection (partition key: `/correlation_id`, stores all request logs)</li><li>Add indexes on: timestamp, user_id, project_id, run_id, ingestion_variant</li><li>TTL on governance_requests (90 days) for cost optimization</li></ul> |
+| **Effort** | 4-6 hours |
+| **Timeline** | 1 day |
+| **Owner** | DevOps Engineer + Data Architect |
+| **Dependencies** | None (can be created independently) |
+| **Success Criteria** | <ul><li>All collections created in Cosmos</li><li>Indexes created (no performance issues)</li><li>Local emulator schema matches production</li></ul> |
+
+**Collection Schemas**:
+
+**sandbox_users**:
+```json
+{
+  "id": "entra-oid",
+  "entra_oid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "email": "user@example.com",
+  "display_name": "User Name",
+  "created_at": "2026-01-01T00:00:00Z",
+  "last_login": "2026-01-25T10:00:00Z",
+  "active": true
+}
+```
+
+**projects**:
+```json
+{
+  "id": "proj-123",
+  "project_id": "proj-123",
+  "name": "InfoJP Pilot A",
+  "corpus_id": "jp",
+  "cost_center": "AICOE-001",
+  "allowed_variants": ["canlii-full", "canlii-metadata-only"],
+  "budget_monthly": 5000,
+  "created_at": "2026-01-01T00:00:00Z",
+  "owner_oid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
+
+**user_projects**:
+```json
+{
+  "id": "uuid",
+  "user_oid": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "project_id": "proj-123",
+  "role": "contributor",
+  "assigned_at": "2026-01-15T00:00:00Z"
+}
+```
+
+**governance_requests** (created by Phase 4A middleware):
+```json
+{
+  "id": "uuid",
+  "correlation_id": "uuid",
+  "timestamp": "2026-01-25T10:30:00Z",
+  "user_id": "entra-oid",
+  "project_id": "proj-123",
+  "run_id": "run-abc",
+  "ingestion_variant": "canlii-full",
+  "cost_center": "AICOE-001",
+  "endpoint": "/chat",
+  "method": "POST",
+  "status_code": 200,
+  "duration_ms": 1250,
+  "error": null,
+  "openai_tokens": 1500,
+  "search_queries": 3,
+  "caller_app": "InfoJP",
+  "env": "sandbox"
+}
+```
+
+---
+
+### Phase 4D: Cost Attribution Queries (KQL/SQL)
+
+**Task**: Build cost reporting queries against governance logs.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Cost queries (SQL on Cosmos + KQL on Application Insights) + cost dashboard |
+| **Work Items** | <ul><li>Query 1: Cost rollup by run_id + ingestion_variant (docs processed, tokens, $)</li><li>Query 2: Cost by project_id (monthly spend, top endpoints)</li><li>Query 3: Cost by user_id (individual user spend, top queries)</li><li>Query 4: Cost by cost_center (finance department view)</li><li>Query 5: Endpoint latency analysis (avg response time, p95, p99 by endpoint)</li><li>Dashboard: Grafana or Application Insights dashboard showing all 5 queries</li></ul> |
+| **Evidence Reference** | README.md (costing strategy), 01-api-call-inventory.md (endpoint mapping) |
+| **Effort** | 8-12 hours |
+| **Timeline** | 2-3 days |
+| **Owner** | Data Analyst + Backend Developer |
+| **Dependencies** | Phase 4A + 4C (data available to query) |
+| **Success Criteria** | <ul><li>All 5 queries produce accurate results</li><li>Dashboard loads without errors</li><li>Cost estimates correlate with actual Azure bill (within 10%)</li></ul> |
+
+**Query Examples**:
+
+**Cost by Run_Id + Variant**:
+```sql
+SELECT 
+  run_id, 
+  ingestion_variant,
+  COUNT(*) as request_count,
+  SUM(openai_tokens) as total_tokens,
+  AVG(duration_ms) as avg_latency_ms,
+  COUNT(CASE WHEN status_code >= 400 THEN 1 END) as error_count,
+  SUM(openai_tokens) * 0.002 / 1000 AS estimated_cost_usd
+FROM governance_requests
+WHERE timestamp >= DateAdd(day, -30, GetUtcDate())
+GROUP BY run_id, ingestion_variant
+ORDER BY estimated_cost_usd DESC
+```
+
+**Cost by Project_Id**:
+```sql
+SELECT 
+  project_id,
+  COUNT(*) as total_requests,
+  SUM(openai_tokens) as total_tokens,
+  SUM(openai_tokens) * 0.002 / 1000 AS monthly_cost_usd,
+  MAX(timestamp) as last_activity
+FROM governance_requests
+WHERE timestamp >= DateAdd(day, -30, GetUtcDate())
+GROUP BY project_id
+ORDER BY monthly_cost_usd DESC
+```
+
+---
+
+### Phase 4 Summary Table
+
+| Task | Effort | Days | Owner | Blocker |
+|------|--------|------|-------|---------|
+| 4A: Governance Middleware | 8-12 hrs | 2-3d | Backend Dev | Phase 3B ✅ |
+| 4B: Authorization Enforcement | 8-12 hrs | 2-3d | Backend + Sec | Phase 4A + 4C |
+| 4C: Cosmos DB Schema | 4-6 hrs | 1d | DevOps | None |
+| 4D: Cost Attribution Queries | 8-12 hrs | 2-3d | Data Analyst | Phase 4A + 4C |
+| **TOTAL PHASE 4** | **40-56 hrs** | **~2 weeks** | **Team of 4** | **Phase 3B** |
+
+---
+
+## Phase 5: Testing & Cutover (1 week, 40-56 hours)
+
+**Goal**: Validate all components, deploy APIM, flip traffic, monitor cutover.
+
+### Phase 5A: Integration Testing
+
+**Task**: Test APIM → Backend → Cosmos → Dashboard end-to-end.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Integration test suite (`tests/integration/test_apim_flow.py`) + test results report |
+| **Work Items** | <ul><li>Test 1: APIM gateway accepts valid JWT, routes to backend</li><li>Test 2: APIM injects headers (X-Correlation-Id, X-Caller-App)</li><li>Test 3: Backend extracts headers, logs to Cosmos</li><li>Test 4: Authorization fails for unauthorized user/project</li><li>Test 5: Streaming (SSE) endpoints work through APIM without buffering</li><li>Test 6: Cost logs populated with OpenAI tokens, Search metrics</li><li>Test 7: Cost dashboard reflects logged data</li><li>Test 8: Rollback scenario (revert to direct backend, no data loss)</li></ul> |
+| **Effort** | 12-16 hours |
+| **Timeline** | 2-3 days |
+| **Owner** | QA Engineer + Backend Developer |
+| **Dependencies** | Phases 3 + 4 complete |
+| **Success Criteria** | <ul><li>All 8 tests pass in sandbox</li><li>Performance acceptable (<5% overhead from middleware/APIM)</li><li>No data loss scenarios identified</li></ul> |
+
+---
+
+### Phase 5B: Performance Testing
+
+**Task**: Load test APIM gateway under expected user load.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Load test report (`11-load-test-results.md`) + APIM capacity recommendations |
+| **Work Items** | <ul><li>Test 1: 10 concurrent users, 60 second duration → measure latency, throughput</li><li>Test 2: 50 concurrent users, 300 second duration → identify bottlenecks</li><li>Test 3: Streaming endpoints under load → verify no buffering issues</li><li>Test 4: Rate limiting enforcement → verify 429 responses at quota boundary</li><li>Test 5: Cosmos DB write capacity → ensure governance logs not creating bottleneck</li><li>Recommendations: APIM tier sizing, backend scale settings, Cosmos RU allocation</li></ul> |
+| **Effort** | 8-12 hours |
+| **Timeline** | 1-2 days |
+| **Owner** | Performance Engineer |
+| **Dependencies** | Phase 5A (integration tests pass) |
+| **Success Criteria** | <ul><li>P95 latency <2 seconds (APIM adds <100ms overhead)</li><li>Throughput ≥ 100 req/sec (expected sandbox load)</li><li>No errors during sustained load test</li></ul> |
+
+---
+
+### Phase 5C: User Acceptance Testing (UAT)
+
+**Task**: Have stakeholders validate functionality with real-world usage.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | UAT sign-off document + bug list |
+| **Work Items** | <ul><li>Scope: 3-5 subject matter experts (AICOE team)</li><li>Scenario 1: User logs in, runs chat query, verifies result</li><li>Scenario 2: User runs ingestion job, verifies headers propagated</li><li>Scenario 3: Cost dashboard shows expected run cost</li><li>Scenario 4: User attempts unauthorized project access → denied</li><li>Scenario 5: Long-running streaming query completes without timeout</li><li>Acceptance criteria met if: all scenarios pass, no blocking bugs, performance acceptable</li></ul> |
+| **Effort** | 12-16 hours |
+| **Timeline** | 2-3 days |
+| **Owner** | Product Manager + QA Engineer |
+| **Dependencies** | Phase 5A (integration tests pass) |
+| **Success Criteria** | <ul><li>All 5 scenarios pass</li><li>No blocking bugs (critical/high priority)</li><li>Stakeholder sign-off received</li></ul> |
+
+---
+
+### Phase 5D: Go-Live Cutover & Monitoring
+
+**Task**: Execute traffic cutover, monitor for issues, establish on-call support.
+
+| Item | Detail |
+|------|--------|
+| **Deliverable** | Cutover execution log + post-go-live dashboard + on-call runbook |
+| **Work Items** | <ul><li>Pre-cutover: final sanity checks (APIM up, backend responding, Cosmos accessible)</li><li>Cutover window: execute plan from 11-deployment-plan.md (Option 2: DNS CNAME switch recommended)</li><li>Immediate post-cutover: monitor for errors (target: <0.1% error rate)</li><li>Hour 1: validate cost logs flowing, dashboard updating</li><li>Hour 4: check for any latency regressions or unusual patterns</li><li>Day 1: summary report, lessons learned</li><li>On-call setup: runbook for common issues (APIM down, Cosmos timeout, auth failure)</li></ul> |
+| **Effort** | 8-12 hours |
+| **Timeline** | 1-2 days (execution) + 1 week (post-go-live support) |
+| **Owner** | DevOps Engineer + Backend Developer + On-Call Support |
+| **Dependencies** | Phase 5C (UAT complete) |
+| **Success Criteria** | <ul><li>Traffic fully routed through APIM</li><li>Error rate <0.1% within 1 hour</li><li>Latency within 5% of pre-cutover baseline</li><li>Cost dashboard operational</li><li>Rollback tested (DNS revert to original backend)</li></ul> |
+
+**Rollback Decision Gate**: If error rate exceeds 1% for >15 minutes, execute immediate rollback (DNS revert, all traffic back to direct backend). Then debug and re-plan.
+
+---
+
+### Phase 5 Summary Table
+
+| Task | Effort | Days | Owner | Blocker |
+|------|--------|------|-------|---------|
+| 5A: Integration Testing | 12-16 hrs | 2-3d | QA + Dev | Phases 3+4 ✅ |
+| 5B: Performance Testing | 8-12 hrs | 1-2d | Perf Eng | Phase 5A ✅ |
+| 5C: User Acceptance | 12-16 hrs | 2-3d | PM + QA | Phase 5A ✅ |
+| 5D: Go-Live + Monitoring | 8-12 hrs | 1-2d + support | DevOps + Dev | Phase 5C ✅ |
+| **TOTAL PHASE 5** | **40-56 hrs** | **~1 week** | **Team of 4+** | **Phase 4 complete** |
+
+---
+
+## Master Timeline & Sequencing
+
+**Total Effort**: 212 hours (Phases 1-2) + 124-172 hours (Phases 3-5) = **336-384 hours**
+
+**Option A: Sequential (Safer)** 
+- Phase 3 (Week 1-2): 44-60 hours
+- Phase 4 (Week 3-4): 40-56 hours (starts after Phase 3 complete)
+- Phase 5 (Week 5): 40-56 hours (starts after Phase 4 complete)
+- **Timeline: 5-6 weeks total**
+- **Risk: Low** (one phase at a time, clear handoffs)
+
+**Option B: Parallel (Aggressive - RECOMMENDED)**
+- Phase 3 + Phase 4 in parallel (Weeks 1-2): 84-116 hours combined
+- Phase 5 (Week 3): 40-56 hours
+- **Timeline: 3-4 weeks total** ⚡
+- **Risk: Medium** (Phase 3 and 4 have dependencies, but mostly separate concerns)
+- **Mitigation**: Phase 3B (APIM policies) must finish before Phase 4A (middleware expects header list from policies); otherwise independent
+
+**Recommended**: **Option B (Parallel)** because Phase 3 (APIM infrastructure) and Phase 4 (backend changes) can overlap significantly. APIM policies finalized by end of Week 1, backend middleware then uses finalized header list.
+
+---
+
+## Critical Path & Risk Mitigation
+
+**Critical Path** (sequence blocking overall timeline):
+1. Phase 3A (OpenAPI spec) → Phase 3B (APIM policies) → Phase 4A (middleware)
+2. Phase 4C (Cosmos schema) → Phase 4A (middleware can write to DB)
+3. Phase 4A + 4B + 4D → Phase 5 (testing dependencies)
+
+**High-Risk Areas**:
+1. **User Auth Implementation** (Phase 4B): Currently missing entirely. Adding JWT validation requires careful testing to avoid locking users out. Mitigation: thorough UAT with test users in sandbox before cutover.
+2. **Streaming through APIM** (Phase 3B + 5A): SSE/ndjson responses must not be buffered. APIM default is to buffer. Mitigation: explicit `buffering=false` policy, load testing under real streaming load.
+3. **Cosmos DB Throughput** (Phase 4C): Every request generates a log entry. Cosmos RUs must be sufficient. Mitigation: start with 10,000 RU, monitor, scale as needed. TTL on governance_requests helps cost optimization.
+4. **Traffic Cutover** (Phase 5D): Moving all user traffic from direct backend to APIM. Any APIM issue blocks all users. Mitigation: DNS-based cutover (easy rollback), aggressive monitoring, on-call support standing by.
+
+---
+
+## Definition of Done (Project-Level)
+
+**Phases 1-2 Complete** ✅:
+- ✅ Phase 1 evidences (stack, scan commands, inspection priorities)
+- ✅ Phase 2 deliverables (API inventory, auth analysis, config mapping, streaming, headers)
+- ✅ Phase 2 appendixes (SDK deep dive, critical findings, scan summary)
+
+**Phases 3-5 Complete** (this PLAN targets these):
+- ✅ Phase 3 deliverables (OpenAPI spec, APIM policies, deployment plan)
+- ✅ Phase 4 deliverables (governance middleware, authorization, Cosmos schema, cost queries)
+- ✅ Phase 5 deliverables (integration tests, load test report, UAT sign-off, go-live log)
+
+**MVP Definition** (per README.md):
+1. ✅ All UI calls go through APIM
+2. ✅ All ingestion jobs produce a `run_id` and propagate headers
+3. ✅ Cost report shows: Run A vs Run B, docs processed, failures, latency, OpenAI token usage ($ estimate)
+4. ✅ Authorization works: user can only call assigned projects
+5. ✅ Headers stored: user profile + project profile persisted and used in logs
+
+---
+
+## Acceptance Criteria
+
+**Technical Acceptance**:
+- OpenAPI spec validated by APIM (can import without errors)
+- All APIM policies tested with real Azure Entra ID tokens
+- 20+ endpoints routed correctly (01-api-call-inventory.md verified)
+- Streaming endpoints (SSE) pass through without buffering
+- All governance headers extracted, logged, queryable from Cosmos
+- Cost queries produce expected results (correlate with actual Azure bill ±10%)
+- Authorization working (401/403 responses correct, project access enforced)
+
+**Operational Acceptance**:
+- APIM instance deployed, scaled, monitored (SIEM + on-call support ready)
+- Rollback procedures tested and documented
+- Cost dashboard operational and accessible to stakeholders
+- Performance: P95 latency <2s, throughput ≥100 req/sec
+- Error rate post-cutover <0.1% within 1 hour
+
+**Stakeholder Acceptance**:
+- AICOE team sign-off (UAT passed)
+- Finance department validates cost report accuracy
+- Security team approves JWT validation + authorization model
+- Support team trained on on-call runbook
+
+---
+
+## Owner & Team Composition
+
+**Recommended Team** (8-12 people):
+- **Architect** (1 FTE): Design APIM policies, header contract, overall solution
+- **Backend Developers** (2 FTE): Implement middleware, authorization, Cosmos integration
+- **DevOps Engineer** (1 FTE): APIM deployment, Cosmos provisioning, infrastructure
+- **APIM Specialist** (0.5 FTE): Policy expertise, streaming/buffering issues, rate limiting
+- **QA/Test Engineer** (1 FTE): Integration + load testing, UAT coordination
+- **Data Analyst** (0.5 FTE): Cost queries, dashboard, reporting
+- **Security Engineer** (0.5 FTE): JWT validation, authorization review, APIM security policies
+- **Product Manager** (0.5 FTE): UAT coordination, stakeholder communication
+- **On-Call Support** (rotating): Post-cutover monitoring, incident response
+- **Project Manager** (0.5 FTE): Timeline, dependencies, risk tracking
+
+**Phases 3-5 Staffing**:
+- **Weeks 1-2 (Phase 3)**: Architect, Backend Dev, DevOps, APIM Specialist (4 people)
+- **Weeks 1-2 (Phase 4 parallel)**: Backend Dev, DevOps, Data Analyst (3 people)
+- **Weeks 3 (Phase 5)**: QA, PM, DevOps, Backend Dev, On-Call (5+ people)
+
+---
+
+## Success Metrics (Post-Go-Live)
+
+**Immediate** (Week 1):
+- Error rate <0.1%
+- Latency within 5% of baseline
+- All cost logs flowing to Cosmos
+- Authorization working (no legitimate user lockouts)
+
+**Short-term** (Month 1):
+- Cost reports accurate within 10% of Azure bill
+- User adoption ≥80% (users comfortable with APIM-fronted API)
+- Minimal support tickets (<5 critical issues)
+
+**Medium-term** (Month 3):
+- APIM becomes standard ingress for all new services
+- Cost attribution model enables accurate chargeback to projects
+- Variants A/B comparison dashboard operational
+- Performance optimizations (caching, policy tuning) implemented
+
+---
+
+## Next Steps (Immediate)
+
+1. **This Week**:
+   - Distribute PLAN.md to team, discuss sequencing (Option A or B?)
+   - Confirm team roles and availability
+   - Schedule Phase 3A kickoff (OpenAPI spec generation)
+
+2. **Week 1 (Phase 3A)**:
+   - Export FastAPI /docs → 09-openapi-spec.yaml
+   - Validate against 01-api-call-inventory.md
+   - Add operationId, security scheme, streaming annotations
+
+3. **Parallel (Week 1-2)**:
+   - Phase 3B: Design APIM policies (10-apim-policies.xml)
+   - Phase 4C: Provision Cosmos DB collections (sandbox_users, projects, user_projects, governance_requests)
+   - Phase 4A kickoff: Begin middleware implementation
+
+4. **End of Week 2**:
+   - Phase 3 deliverables complete (09-openapi-spec.yaml, 10-apim-policies.xml, 11-deployment-plan.md)
+   - Phase 4A/4B implementation in progress
+   - Integration test framework ready
+
+---
+
+## Reference Documents
+
+**Phase 1-2 Completed Deliverables**:
+- evidences/01-stack-evidence.md
+- evidences/02-scan-command-plan.md
+- evidences/03-inspection-priority.md
+- docs/apim-scan/01-api-call-inventory.md
+- docs/apim-scan/02-auth-and-identity.md
+- docs/apim-scan/03-config-and-base-urls.md
+- docs/apim-scan/04-streaming-analysis.md
+- docs/apim-scan/05-header-contract-draft.md
+- docs/apim-scan/APPENDIX-A-Azure-SDK-Clients.md
+- docs/apim-scan/APPENDIX-SCAN-SUMMARY.md
+- docs/apim-scan/INDEX.md
+- docs/apim-scan/SUMMARY.md
+
+**Supporting Context**:
+- README.md (5-phase process, header contract, costing strategy, MVP definition)
+- CRITICAL-FINDINGS-SDK-REFACTORING.md (architecture decision, recommended approach)
+- This PLAN.md (master execution plan, Phases 3-5)
+
+---
+
+**End of PLAN.md**

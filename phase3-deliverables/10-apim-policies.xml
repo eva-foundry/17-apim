@@ -1,0 +1,532 @@
+<!--
+  10-apim-policies.xml
+  Azure API Management Policies for MS-InfoJP RAG System
+  
+  Purpose: Comprehensive policy suite for governance, security, cost attribution, and observability
+  Version: 1.0.0
+  Date: February 6, 2026
+  
+  Policy Types Implemented:
+  1. JWT Validation (Entra ID authentication)
+  2. Rate Limiting (100 req/min per user, 10k req/min per app)
+  3. Header Injection (governance tracking: X-Correlation-Id, X-Cost-Center, X-Project-Id, etc.)
+  4. Streaming Handling (disable buffering for SSE endpoints)
+  5. CORS (allow ESDC/HRSDC origins)
+  6. Logging (Application Insights integration)
+  
+  References:
+  - OpenAPI Spec: 09-openapi-spec.json (39 endpoints)
+  - Header Contract: docs/apim-scan/05-header-contract-draft.md
+  - APIM Project Plan: PLAN.md (Phase 3B)
+-->
+
+<policies>
+  <!--
+    ======================================
+    INBOUND POLICIES
+    Applied to ALL incoming requests
+    ======================================
+  -->
+  <inbound>
+    <base />
+    
+    <!-- ====================================
+         POLICY 1: CORS - Cross-Origin Resource Sharing
+         Allow frontend applications from ESDC/HRSDC domains
+         ==================================== -->
+    <cors allow-credentials="true">
+      <allowed-origins>
+        <!-- Production Origins -->
+        <origin>https://infojp.hrsdc-rhdcc.gc.ca</origin>
+        <origin>https://infojp.esdc.gc.ca</origin>
+        
+        <!-- Staging Origins -->
+        <origin>https://infojp-stg.hrsdc-rhdcc.gc.ca</origin>
+        <origin>https://infojp-stg.esdc.gc.ca</origin>
+        
+        <!-- Development Origins -->
+        <origin>https://infojp-dev.hrsdc-rhdcc.gc.ca</origin>
+        <origin>https://infojp-dev.esdc.gc.ca</origin>
+        <origin>http://localhost:5173</origin> <!-- Local dev frontend -->
+        <origin>http://localhost:5174</origin> <!-- Alternative local dev -->
+      </allowed-origins>
+      
+      <allowed-methods>
+        <method>GET</method>
+        <method>POST</method>
+        <method>PUT</method>
+        <method>DELETE</method>
+        <method>OPTIONS</method>
+      </allowed-methods>
+      
+      <allowed-headers>
+        <header>Content-Type</header>
+        <header>Authorization</header>
+        <header>Accept</header>
+        <header>X-Correlation-Id</header>
+        <header>X-Request-Id</header>
+        <header>X-Project-Id</header>
+        <header>X-Cost-Center</header>
+        <header>X-Caller-App</header>
+      </allowed-headers>
+      
+      <expose-headers>
+        <header>X-Correlation-Id</header>
+        <header>X-Run-Id</header>
+        <header>X-Response-Time</header>
+      </expose-headers>
+    </cors>
+    
+    <!-- ====================================
+         POLICY 2: JWT VALIDATION - Entra ID Authentication
+         Validate Azure AD (Entra ID) tokens for all protected endpoints
+         Exclude: /health, /api/env, /getFeatureFlags (public endpoints)
+         ==================================== -->
+    <choose>
+      <when condition="@{
+        var path = context.Request.Url.Path;
+        return path.Equals(&quot;/health&quot;, StringComparison.OrdinalIgnoreCase) ||
+               path.Equals(&quot;/api/env&quot;, StringComparison.OrdinalIgnoreCase) ||
+               path.Equals(&quot;/getFeatureFlags&quot;, StringComparison.OrdinalIgnoreCase);
+      }">
+        <!-- Skip JWT validation for public endpoints -->
+        <set-variable name="skip-auth" value="true" />
+      </when>
+      <otherwise>
+        <!-- JWT Validation for protected endpoints -->
+        <validate-jwt 
+          header-name="Authorization" 
+          failed-validation-httpcode="401" 
+          failed-validation-error-message="Unauthorized: Invalid or missing JWT token"
+          require-expiration-time="true" 
+          require-scheme="Bearer" 
+          require-signed-tokens="true"
+          clock-skew="300">
+          
+          <!-- Azure AD / Entra ID OpenID Configuration -->
+          <openid-config url="https://login.microsoftonline.com/bfb12ca1-7f37-47d5-9cf5-8aa52214a0d8/v2.0/.well-known/openid-configuration" />
+          
+          <!-- Expected Audiences (REPLACE WITH ACTUAL APP REGISTRATION CLIENT IDs) -->
+          <audiences>
+            <audience>api://infojp-backend-prod</audience>  <!-- Production -->
+            <audience>api://infojp-backend-stg</audience>   <!-- Staging -->
+            <audience>api://infojp-backend-dev</audience>   <!-- Development -->
+          </audiences>
+          
+          <!-- Required Claims -->
+          <required-claims>
+            <claim name="aud" match="any">
+              <value>api://infojp-backend-prod</value>
+              <value>api://infojp-backend-stg</value>
+              <value>api://infojp-backend-dev</value>
+            </claim>
+          </required-claims>
+        </validate-jwt>
+        
+        <!-- Extract JWT Claims to Variables -->
+        <set-variable name="jwt-user-oid" value="@{
+          return context.Request.Headers.GetValueOrDefault(&quot;Authorization&quot;, &quot;&quot;)
+            .Replace(&quot;Bearer &quot;, &quot;&quot;);
+        }" />
+      </otherwise>
+    </choose>
+    
+    <!-- ====================================
+         POLICY 3: RATE LIMITING - Traffic Control
+         Per-User Limit: 100 requests/minute
+         Per-App Limit: 10,000 requests/minute
+         Monthly Quota: 1,000,000 requests/month
+         ==================================== -->
+    <choose>
+      <when condition="@(context.Variables.GetValueOrDefault(&quot;skip-auth&quot;, false) == false)">
+        <!-- Rate Limit by User (extract from JWT oid claim) -->
+        <rate-limit-by-key 
+          calls="100" 
+          renewal-period="60" 
+          counter-key="@{
+            var jwt = context.Request.Headers.GetValueOrDefault(&quot;Authorization&quot;, &quot;&quot;);
+            if (string.IsNullOrEmpty(jwt)) return &quot;anonymous&quot;;
+            var token = jwt.Replace(&quot;Bearer &quot;, &quot;&quot;);
+            var parts = token.Split('.');
+            if (parts.Length != 3) return &quot;invalid-token&quot;;
+            var payload = Encoding.UTF8.GetString(Convert.FromBase64String(parts[1]));
+            var oid = System.Text.RegularExpressions.Regex.Match(payload, &quot;\\&quot;oid\\&quot;:\\&quot;([^\\&quot;]+)\\&quot;&quot;).Groups[1].Value;
+            return string.IsNullOrEmpty(oid) ? &quot;no-oid&quot; : oid;
+          }" 
+          retry-after-header-name="Retry-After" 
+          retry-after-variable-name="retryafter" 
+          remaining-calls-header-name="X-RateLimit-Remaining" 
+          total-calls-header-name="X-RateLimit-Limit" />
+        
+        <!-- Rate Limit by Subscription (per-app) -->
+        <rate-limit-by-key 
+          calls="10000" 
+          renewal-period="60" 
+          counter-key="@(context.Subscription?.Id ?? &quot;no-subscription&quot;)" />
+        
+        <!-- Monthly Quota by Subscription -->
+        <quota-by-key 
+          calls="1000000" 
+          renewal-period="2592000" 
+          counter-key="@(context.Subscription?.Id ?? &quot;no-subscription&quot;)" />
+      </when>
+    </choose>
+    
+    <!-- ====================================
+         POLICY 4: HEADER INJECTION - Governance & Cost Attribution
+         Inject governance tracking headers for observability and cost tracking
+         ==================================== -->
+    
+    <!-- 4.1 X-Correlation-Id: Distributed tracing (generate if not provided) -->
+    <set-header name="X-Correlation-Id" exists-action="skip">
+      <value>@(Guid.NewGuid().ToString())</value>
+    </set-header>
+    
+    <!-- 4.2 X-Run-Id: Execution tracking (always generate new) -->
+    <set-header name="X-Run-Id" exists-action="override">
+      <value>@(Guid.NewGuid().ToString())</value>
+    </set-header>
+    
+    <!-- 4.3 X-Caller-App: Client application identifier -->
+    <set-header name="X-Caller-App" exists-action="skip">
+      <value>@(context.Subscription?.Name ?? "InfoJP-Frontend")</value>
+    </set-header>
+    
+    <!-- 4.4 X-Environment: Deployment environment -->
+    <set-header name="X-Env" exists-action="override">
+      <value>@{
+        var apimName = context.Deployment.ServiceName.ToLowerInvariant();
+        if (apimName.Contains("prd")) return "production";
+        if (apimName.Contains("stg")) return "staging";
+        if (apimName.Contains("dev")) return "development";
+        return "sandbox";
+      }</value>
+    </set-header>
+    
+    <!-- 4.5 X-User-Id: Extract from JWT oid claim -->
+    <choose>
+      <when condition="@(context.Variables.GetValueOrDefault(&quot;skip-auth&quot;, false) == false)">
+        <set-header name="X-User-Id" exists-action="override">
+          <value>@{
+            var jwt = context.Request.Headers.GetValueOrDefault("Authorization", "");
+            if (string.IsNullOrEmpty(jwt)) return "anonymous";
+            var token = jwt.Replace("Bearer ", "");
+            var parts = token.Split('.');
+            if (parts.Length != 3) return "invalid-token";
+            var payload = Encoding.UTF8.GetString(Convert.FromBase64String(parts[1]));
+            var oid = System.Text.RegularExpressions.Regex.Match(payload, "\\\"oid\\\":\\\"([^\\\"]+)\\\"").Groups[1].Value;
+            return string.IsNullOrEmpty(oid) ? "no-oid" : oid;
+          }</value>
+        </set-header>
+      </when>
+      <otherwise>
+        <set-header name="X-User-Id" exists-action="override">
+          <value>anonymous</value>
+        </set-header>
+      </otherwise>
+    </choose>
+    
+    <!-- 4.6 X-Cost-Center: Cost attribution (from subscription metadata or JWT) -->
+    <set-header name="X-Cost-Center" exists-action="skip">
+      <value>@{
+        // Attempt to extract from subscription metadata first
+        var costCenter = context.Subscription?.Properties.GetValueOrDefault("cost-center", "");
+        if (!string.IsNullOrEmpty(costCenter)) return costCenter;
+        
+        // Fallback: Extract from JWT claim (if configured in Entra ID)
+        var jwt = context.Request.Headers.GetValueOrDefault("Authorization", "");
+        if (!string.IsNullOrEmpty(jwt)) {
+          var token = jwt.Replace("Bearer ", "");
+          var parts = token.Split('.');
+          if (parts.Length == 3) {
+            var payload = Encoding.UTF8.GetString(Convert.FromBase64String(parts[1]));
+            var match = System.Text.RegularExpressions.Regex.Match(payload, "\\\"costCenter\\\":\\\"([^\\\"]+)\\\"");
+            if (match.Success) return match.Groups[1].Value;
+          }
+        }
+        
+        // Default: Derive from environment or subscription
+        return "AICOE-EVA";
+      }</value>
+    </set-header>
+    
+    <!-- 4.7 X-Project-Id: Project attribution (from subscription metadata) -->
+    <set-header name="X-Project-Id" exists-action="skip">
+      <value>@(context.Subscription?.Properties.GetValueOrDefault("project-id", "MS-InfoJP"))</value>
+    </set-header>
+    
+    <!-- 4.8 X-Ingestion-Variant: A/B testing flag (from query param or header) -->
+    <set-header name="X-Ingestion-Variant" exists-action="skip">
+      <value>@{
+        var variant = context.Request.Headers.GetValueOrDefault("X-Ingestion-Variant", "");
+        if (!string.IsNullOrEmpty(variant)) return variant;
+        return context.Request.Url.Query.GetValueOrDefault("variant", "default");
+      }</value>
+    </set-header>
+    
+    <!-- 4.9 X-Request-Timestamp: Request arrival time -->
+    <set-header name="X-Request-Timestamp" exists-action="override">
+      <value>@(DateTime.UtcNow.ToString("o"))</value>
+    </set-header>
+    
+    <!-- 4.10 Header Protection: Strip client-provided sensitive headers -->
+    <set-header name="X-User-Id" exists-action="delete" /> <!-- Recomputed above -->
+    <set-header name="X-Run-Id" exists-action="delete" />  <!-- Always APIM-generated -->
+    <set-header name="X-Env" exists-action="delete" />     <!-- Always APIM-authoritative -->
+    
+    <!-- ====================================
+         POLICY 5: STREAMING HANDLING - SSE Support
+         Disable buffering for Server-Sent Events (SSE) endpoints
+         Endpoints: /chat (ndjson), /stream (SSE), /tdstream (SSE)
+         ==================================== -->
+    <choose>
+      <when condition="@{
+        var path = context.Request.Url.Path.ToLowerInvariant();
+        return path.Equals(&quot;/chat&quot;) || 
+               path.Equals(&quot;/stream&quot;) || 
+               path.Equals(&quot;/tdstream&quot;);
+      }">
+        <!-- Disable response buffering for streaming endpoints -->
+        <set-variable name="streaming-endpoint" value="true" />
+        
+        <!-- Preserve streaming-related headers -->
+        <set-header name="Cache-Control" exists-action="skip">
+          <value>no-cache</value>
+        </set-header>
+        
+        <set-header name="X-Accel-Buffering" exists-action="override">
+          <value>no</value>
+        </set-header>
+      </when>
+      <otherwise>
+        <set-variable name="streaming-endpoint" value="false" />
+      </otherwise>
+    </choose>
+    
+  </inbound>
+  
+  <!--
+    ======================================
+    BACKEND POLICIES
+    Applied before forwarding to backend
+    ======================================
+  -->
+  <backend>
+    <base />
+    
+    <!-- Forward request to backend with streaming configuration -->
+    <choose>
+      <when condition="@(context.Variables.GetValueOrDefault&lt;bool&gt;(&quot;streaming-endpoint&quot;, false))">
+        <!-- Streaming endpoints: disable buffering, increase timeout -->
+        <forward-request 
+          timeout="600" 
+          follow-redirects="false" 
+          buffer-request-body="false" 
+          buffer-response="false" />
+      </when>
+      <otherwise>
+        <!-- Non-streaming endpoints: standard configuration -->
+        <forward-request 
+          timeout="120" 
+          follow-redirects="false" />
+      </otherwise>
+    </choose>
+  </backend>
+  
+  <!--
+    ======================================
+    OUTBOUND POLICIES
+    Applied to ALL outgoing responses
+    ======================================
+  -->
+  <outbound>
+    <base />
+    
+    <!-- ====================================
+         POLICY 6: LOGGING & OBSERVABILITY - Application Insights
+         Log request/response metadata for monitoring and debugging
+         ==================================== -->
+    
+    <!-- 6.1 Add Response Timing Headers -->
+    <set-header name="X-Response-Time" exists-action="override">
+      <value>@(context.Elapsed.TotalMilliseconds.ToString())</value>
+    </set-header>
+    
+    <set-header name="X-Correlation-Id" exists-action="override">
+      <value>@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))</value>
+    </set-header>
+    
+    <!-- 6.2 Log to Application Insights -->
+    <log-to-azuremonitor>
+      <![CDATA[{
+        "timestamp": "@(DateTime.UtcNow.ToString("o"))",
+        "correlation_id": "@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))",
+        "run_id": "@(context.Request.Headers.GetValueOrDefault("X-Run-Id", ""))",
+        "user_id": "@(context.Request.Headers.GetValueOrDefault("X-User-Id", "anonymous"))",
+        "subscription_id": "@(context.Subscription?.Id ?? "no-subscription")",
+        "subscription_name": "@(context.Subscription?.Name ?? "unknown")",
+        "caller_app": "@(context.Request.Headers.GetValueOrDefault("X-Caller-App", "unknown"))",
+        "environment": "@(context.Request.Headers.GetValueOrDefault("X-Env", "unknown"))",
+        "cost_center": "@(context.Request.Headers.GetValueOrDefault("X-Cost-Center", "unknown"))",
+        "project_id": "@(context.Request.Headers.GetValueOrDefault("X-Project-Id", "unknown"))",
+        "ingestion_variant": "@(context.Request.Headers.GetValueOrDefault("X-Ingestion-Variant", "default"))",
+        "request_method": "@(context.Request.Method)",
+        "request_url": "@(context.Request.Url.Path)",
+        "request_query": "@(context.Request.Url.QueryString)",
+        "response_status": "@(context.Response.StatusCode)",
+        "response_time_ms": "@(context.Elapsed.TotalMilliseconds)",
+        "backend_service": "@(context.Request.Url.Host)",
+        "api_version": "1.0.0",
+        "apim_region": "@(context.Deployment.Region)",
+        "is_streaming": "@(context.Variables.GetValueOrDefault<bool>("streaming-endpoint", false))"
+      }]]>
+    </log-to-azuremonitor>
+    
+    <!-- 6.3 Redact Sensitive Headers in Logs (already done via Application Insights config) -->
+    <!-- Note: Configure Application Insights to redact Authorization, X-API-Key headers -->
+    
+    <!-- 6.4 Add Custom Headers for Debugging (dev/staging only) -->
+    <choose>
+      <when condition="@{
+        var env = context.Request.Headers.GetValueOrDefault(&quot;X-Env&quot;, &quot;production&quot;);
+        return env.Equals(&quot;development&quot;, StringComparison.OrdinalIgnoreCase) || 
+               env.Equals(&quot;staging&quot;, StringComparison.OrdinalIgnoreCase);
+      }">
+        <set-header name="X-APIM-Trace-Enabled" exists-action="override">
+          <value>true</value>
+        </set-header>
+      </when>
+    </choose>
+    
+  </outbound>
+  
+  <!--
+    ======================================
+    ERROR HANDLING - On-Error Policies
+    Applied when errors occur (4xx, 5xx)
+    ======================================
+  -->
+  <on-error>
+    <base />
+    
+    <!-- Log Error Details -->
+    <log-to-azuremonitor>
+      <![CDATA[{
+        "timestamp": "@(DateTime.UtcNow.ToString("o"))",
+        "correlation_id": "@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))",
+        "run_id": "@(context.Request.Headers.GetValueOrDefault("X-Run-Id", ""))",
+        "user_id": "@(context.Request.Headers.GetValueOrDefault("X-User-Id", "anonymous"))",
+        "error_source": "@(context.LastError.Source)",
+        "error_reason": "@(context.LastError.Reason)",
+        "error_message": "@(context.LastError.Message)",
+        "error_scope": "@(context.LastError.Scope)",
+        "error_section": "@(context.LastError.Section)",
+        "request_method": "@(context.Request.Method)",
+        "request_url": "@(context.Request.Url.Path)",
+        "response_status": "@(context.Response.StatusCode)",
+        "response_time_ms": "@(context.Elapsed.TotalMilliseconds)"
+      }]]>
+    </log-to-azuremonitor>
+    
+    <!-- Return Standardized Error Response -->
+    <choose>
+      <!-- 401 Unauthorized: JWT validation failed -->
+      <when condition="@(context.Response.StatusCode == 401)">
+        <return-response>
+          <set-status code="401" reason="Unauthorized" />
+          <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+          </set-header>
+          <set-header name="X-Correlation-Id" exists-action="override">
+            <value>@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))</value>
+          </set-header>
+          <set-body>@{
+            return JsonConvert.SerializeObject(new {
+              error = "Unauthorized",
+              message = "Invalid or expired JWT token. Please authenticate and try again.",
+              correlation_id = context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""),
+              timestamp = DateTime.UtcNow.ToString("o")
+            });
+          }</set-body>
+        </return-response>
+      </when>
+      
+      <!-- 429 Too Many Requests: Rate limit exceeded -->
+      <when condition="@(context.Response.StatusCode == 429)">
+        <return-response>
+          <set-status code="429" reason="Too Many Requests" />
+          <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+          </set-header>
+          <set-header name="X-Correlation-Id" exists-action="override">
+            <value>@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))</value>
+          </set-header>
+          <set-header name="Retry-After" exists-action="override">
+            <value>@(context.Variables.GetValueOrDefault("retryafter", "60"))</value>
+          </set-header>
+          <set-body>@{
+            var retryAfter = context.Variables.GetValueOrDefault("retryafter", "60");
+            return JsonConvert.SerializeObject(new {
+              error = "TooManyRequests",
+              message = $"Rate limit exceeded. Please retry after {retryAfter} seconds.",
+              retry_after = retryAfter,
+              correlation_id = context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""),
+              timestamp = DateTime.UtcNow.ToString("o")
+            });
+          }</set-body>
+        </return-response>
+      </when>
+      
+      <!-- 403 Forbidden: Quota exceeded -->
+      <when condition="@(context.Response.StatusCode == 403 && context.LastError.Reason == &quot;QuotaExceeded&quot;)">
+        <return-response>
+          <set-status code="403" reason="Forbidden" />
+          <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+          </set-header>
+          <set-header name="X-Correlation-Id" exists-action="override">
+            <value>@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))</value>
+          </set-header>
+          <set-body>@{
+            return JsonConvert.SerializeObject(new {
+              error = "QuotaExceeded",
+              message = "Monthly request quota exceeded. Please contact support to increase your quota.",
+              correlation_id = context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""),
+              timestamp = DateTime.UtcNow.ToString("o")
+            });
+          }</set-body>
+        </return-response>
+      </when>
+      
+      <!-- 500 Internal Server Error: Gateway or backend failure -->
+      <when condition="@(context.Response.StatusCode >= 500)">
+        <return-response>
+          <set-status code="500" reason="Internal Server Error" />
+          <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+          </set-header>
+          <set-header name="X-Correlation-Id" exists-action="override">
+            <value>@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))</value>
+          </set-header>
+          <set-body>@{
+            return JsonConvert.SerializeObject(new {
+              error = "InternalServerError",
+              message = "An unexpected error occurred. Please try again later or contact support if the issue persists.",
+              correlation_id = context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""),
+              timestamp = DateTime.UtcNow.ToString("o"),
+              support_reference = "Quote this correlation_id when contacting support"
+            });
+          }</set-body>
+        </return-response>
+      </when>
+      
+      <!-- Default Error Handler: Pass through backend error response -->
+      <otherwise>
+        <set-header name="X-Correlation-Id" exists-action="override">
+          <value>@(context.Request.Headers.GetValueOrDefault("X-Correlation-Id", ""))</value>
+        </set-header>
+      </otherwise>
+    </choose>
+    
+  </on-error>
+</policies>

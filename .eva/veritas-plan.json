@@ -1,0 +1,219 @@
+{
+  "schema": "eva.veritas-plan.v1",
+  "generated_at": "2026-02-25T06:37:11.130Z",
+  "generated_from": [
+    "PLAN.md"
+  ],
+  "format_detected": "veritas",
+  "prefix": "F17",
+  "features": [
+    {
+      "id": "F17-01",
+      "title": "?? PROJECT STATUS DASHBOARD",
+      "source_heading": "## Feature: ?? PROJECT STATUS DASHBOARD [ID=F17-01]",
+      "stories": [
+        {
+          "id": "F17-01-001",
+          "title": "Phase Completion Matrix",
+          "feature_id": "F17-01",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-01-002",
+          "title": "Critical Findings Impact",
+          "feature_id": "F17-01",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-01-003",
+          "title": "Current Blockers & Risks",
+          "feature_id": "F17-01",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-01-004",
+          "title": "Next Milestone: Phase 3A Kickoff",
+          "feature_id": "F17-01",
+          "source": "heading",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "F17-02",
+      "title": "Executive Summary",
+      "source_heading": "## Feature: Executive Summary [ID=F17-02]",
+      "stories": []
+    },
+    {
+      "id": "F17-03",
+      "title": "Phase 3: APIM Design & Setup (2-3 weeks, 44-60 hours)",
+      "source_heading": "## Feature: Phase 3: APIM Design & Setup (2-3 weeks, 44-60 hours) [ID=F17-03]",
+      "stories": [
+        {
+          "id": "F17-03-001",
+          "title": "Phase 3A: Generate OpenAPI Specification",
+          "feature_id": "F17-03",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-03-002",
+          "title": "Phase 3B: Design APIM Policies",
+          "feature_id": "F17-03",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-03-003",
+          "title": "Phase 3C: Create Deployment & Cutover Plan",
+          "feature_id": "F17-03",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-03-004",
+          "title": "Phase 3 Summary Table",
+          "feature_id": "F17-03",
+          "source": "heading",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "F17-04",
+      "title": "Phase 4: Backend Middleware & Header Propagation (2 weeks, 40-56 hours)",
+      "source_heading": "## Feature: Phase 4: Backend Middleware & Header Propagation (2 weeks, 40-56 hours) [ID=F17-04]",
+      "stories": [
+        {
+          "id": "F17-04-001",
+          "title": "Phase 4A: Governance Logging Middleware",
+          "feature_id": "F17-04",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-04-002",
+          "title": "Phase 4B: Authorization Enforcement Middleware",
+          "feature_id": "F17-04",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-04-003",
+          "title": "Phase 4C: Cosmos DB Schema Extension",
+          "feature_id": "F17-04",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-04-004",
+          "title": "Phase 4D: Cost Attribution Queries (KQL/SQL)",
+          "feature_id": "F17-04",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-04-005",
+          "title": "Phase 4 Summary Table",
+          "feature_id": "F17-04",
+          "source": "heading",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "F17-05",
+      "title": "Phase 5: Testing & Cutover (1 week, 40-56 hours)",
+      "source_heading": "## Feature: Phase 5: Testing & Cutover (1 week, 40-56 hours) [ID=F17-05]",
+      "stories": [
+        {
+          "id": "F17-05-001",
+          "title": "Phase 5A: Integration Testing",
+          "feature_id": "F17-05",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-05-002",
+          "title": "Phase 5B: Performance Testing",
+          "feature_id": "F17-05",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-05-003",
+          "title": "Phase 5C: User Acceptance Testing (UAT)",
+          "feature_id": "F17-05",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-05-004",
+          "title": "Phase 5D: Go-Live Cutover & Monitoring",
+          "feature_id": "F17-05",
+          "source": "heading",
+          "tasks": []
+        },
+        {
+          "id": "F17-05-005",
+          "title": "Phase 5 Summary Table",
+          "feature_id": "F17-05",
+          "source": "heading",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "F17-06",
+      "title": "Master Timeline & Sequencing",
+      "source_heading": "## Feature: Master Timeline & Sequencing [ID=F17-06]",
+      "stories": []
+    },
+    {
+      "id": "F17-07",
+      "title": "Critical Path & Risk Mitigation",
+      "source_heading": "## Feature: Critical Path & Risk Mitigation [ID=F17-07]",
+      "stories": []
+    },
+    {
+      "id": "F17-08",
+      "title": "Definition of Done (Project-Level)",
+      "source_heading": "## Feature: Definition of Done (Project-Level) [ID=F17-08]",
+      "stories": []
+    },
+    {
+      "id": "F17-09",
+      "title": "Acceptance Criteria",
+      "source_heading": "## Feature: Acceptance Criteria [ID=F17-09]",
+      "stories": []
+    },
+    {
+      "id": "F17-10",
+      "title": "Owner & Team Composition",
+      "source_heading": "## Feature: Owner & Team Composition [ID=F17-10]",
+      "stories": []
+    },
+    {
+      "id": "F17-11",
+      "title": "Success Metrics (Post-Go-Live)",
+      "source_heading": "## Feature: Success Metrics (Post-Go-Live) [ID=F17-11]",
+      "stories": []
+    },
+    {
+      "id": "F17-12",
+      "title": "Next Steps (Immediate)",
+      "source_heading": "## Feature: Next Steps (Immediate) [ID=F17-12]",
+      "stories": []
+    },
+    {
+      "id": "F17-13",
+      "title": "Reference Documents",
+      "source_heading": "## Feature: Reference Documents [ID=F17-13]",
+      "stories": []
+    }
+  ]
+}

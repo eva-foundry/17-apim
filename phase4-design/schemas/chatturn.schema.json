@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ChatTurn",
+  "type": "object",
+  "required": ["messageId", "sessionId", "userId", "role", "text", "createdAt"],
+  "properties": {
+    "messageId": {"type": "string"},
+    "sessionId": {"type": "string"},
+    "userId": {"type": "string"},
+    "role": {"type": "string", "enum": ["user","assistant","system"]},
+    "text": {"type": "string"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "tokens": {"type": ["integer", "null"]},
+    "metadata": {"type": ["object", "null"]}
+  }
+}
