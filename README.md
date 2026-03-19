@@ -1,6 +1,27 @@
 # OVERVIEW: Getting APIM into InfoJP PoC
 
-**Project Status**: Phase 2 Complete (Feb 4, 2026) | Documentation 100% Validated ✅  
+<!-- eva-primed -->
+<!-- foundation-primer: 2026-03-03 by agent:copilot -->
+
+## EVA Ecosystem Integration
+
+| Tool | Purpose | How to Use |
+|------|---------|------------|
+| 37-data-model | Single source of truth for all project entities | GET http://localhost:8010/model/projects/17-apim |
+| 29-foundry | Agentic capabilities (search, RAG, eval, observability) | C:\eva-foundry\eva-foundation\29-foundry |
+| 48-eva-veritas | Trust score and coverage audit | MCP tool: audit_repo / get_trust_score |
+| 07-foundation-layer | Copilot instructions primer + governance templates | MCP tool: apply_primer / audit_project |
+
+**Agent rule**: Query the data model API before reading source files.
+```powershell
+Invoke-RestMethod "http://localhost:8010/model/agent-guide"   # complete protocol
+Invoke-RestMethod "http://localhost:8010/model/agent-summary" # all layer counts
+```
+
+---
+
+
+**Project Status**: Phase 2 Complete (Feb 4, 2026) | Documentation 100% Validated ?  
 **Next Phase**: Phase 3 (APIM Design) - Ready to Start  
 **Evidence-Based**: All claims verified against source code ([Audit Report](./ACCURACY-AUDIT-20260204.md))
 
@@ -14,7 +35,7 @@ Here's a practical **end-to-end overview** for implementing **APIM** in **MS-Inf
 
 You'll do two things in parallel:
 
-1. **Inventory InfoJP's outbound HTTP calls** (UI → backend, backend → Azure services / external sources)
+1. **Inventory InfoJP's outbound HTTP calls** (UI ? backend, backend ? Azure services / external sources)
 2. Stand up **APIM as the "front door"** and progressively **route those calls through APIM** with policies
 
 In practice, you'll usually front **the InfoJP backend API** first (because it's the app contract), then optionally front **downstream dependencies** (Search, Storage, etc.) if you want centralized governance.
@@ -23,7 +44,7 @@ In practice, you'll usually front **the InfoJP backend API** first (because it's
 
 ## Process Overview (Phased)
 
-### Phase A — Inventory & Classify Calls
+### Phase A ? Inventory & Classify Calls
 
 **Goal**: Produce a list of *every* HTTP call InfoJP makes, and decide what APIM should own.
 
@@ -43,15 +64,15 @@ For each call, capture:
 - **Must-have governance** (quota, per-user attribution, audit fields)
 
 **Decision**:
-- ✅ Put behind APIM: **UI → InfoJP backend APIs** (always)
-- 🟡 Optional behind APIM: backend → internal platform APIs (your "EVA Brain contracts" path)
-- 🔴 Usually not behind APIM: high-volume internal service-to-service calls if you already have private networking + service identity + internal gateway (depends on your governance stance)
+- ? Put behind APIM: **UI ? InfoJP backend APIs** (always)
+- ?? Optional behind APIM: backend ? internal platform APIs (your "EVA Brain contracts" path)
+- ?? Usually not behind APIM: high-volume internal service-to-service calls if you already have private networking + service identity + internal gateway (depends on your governance stance)
 
 **Deliverable**: **InfoJP API Call Inventory.md**
 
 ---
 
-### Phase B — Define the "External Contract" (What APIM Will Expose)
+### Phase B ? Define the "External Contract" (What APIM Will Expose)
 
 **Goal**: Make a crisp, minimal set of APIs that UIs and consumers will call.
 
@@ -75,7 +96,7 @@ If you're pursuing EVA-style governance, you'll want a standard header set:
 
 ---
 
-### Phase C — Implement APIM "Front Door" with Policies
+### Phase C ? Implement APIM "Front Door" with Policies
 
 **Goal**: Put APIM in front without breaking anything.
 
@@ -95,7 +116,7 @@ At the API or operation level:
 
 **C3. Observability**
 - Enable APIM diagnostics to Log Analytics / App Insights
-- Ensure correlation id flows through: APIM → backend → downstream
+- Ensure correlation id flows through: APIM ? backend ? downstream
 
 **Deliverables**:
 - **APIM API configuration**
@@ -103,12 +124,12 @@ At the API or operation level:
 
 ---
 
-### Phase D — Cutover Strategy (How You Flip Traffic)
+### Phase D ? Cutover Strategy (How You Flip Traffic)
 
 **Goal**: No "big bang".
 
 **Common safe cutover options**:
-1. **Config switch**: UI uses `API_BASE_URL` → change to APIM gateway URL
+1. **Config switch**: UI uses `API_BASE_URL` ? change to APIM gateway URL
 2. **DNS / Front Door**: keep hostname stable, swap origin to APIM
 3. **Dual-run**: percentage routing (if you have Front Door / traffic manager patterns)
 
@@ -116,14 +137,14 @@ At the API or operation level:
 
 ---
 
-### Phase E — Harden Governance for Protected B Reality
+### Phase E ? Harden Governance for Protected B Reality
 
 Once stable, add the "real enterprise stuff":
 - **Per-user / per-app throttles**
 - **Subscription enforcement** (if you want per-client keys)
 - **Schema validation** (prevent prompt injection payload shapes)
 - **PII/Protected B guardrails** (block disallowed fields, enforce disclaimers)
-- **Response caching** (careful for jurisprudence—only if non-user-specific)
+- **Response caching** (careful for jurisprudence?only if non-user-specific)
 - **Versioning**: `/v1`, `/v2` or revisions in APIM
 - **WAF**: Front Door + WAF ahead of APIM if exposed
 
@@ -162,7 +183,7 @@ You want a **minimal header set** that works for both interactive queries and in
 ### Frontend (User Queries)
 - Frontend calls only APIM endpoint
 - It attaches: `X-Project-Id`, `X-Correlation-Id`, optionally `X-Run-Id`
-- **Don't trust client-sent identity/cost headers** — APIM should override or derive from token/claims or backend lookup
+- **Don't trust client-sent identity/cost headers** ? APIM should override or derive from token/claims or backend lookup
 
 ### Backend (Ingestion Processes)
 - Every ingestion worker call includes: `X-Project-Id`, `X-Run-Id`, `X-Ingestion-Variant`, `X-Correlation-Id`
@@ -188,7 +209,7 @@ The clean model is:
 
 **Flow**:
 1. User authenticates
-2. Backend resolves user → allowed projects
+2. Backend resolves user ? allowed projects
 3. Frontend displays project picker
 4. All calls include `X-Project-Id`
 5. Backend re-checks authorization on every call (don't rely on UI)
@@ -253,12 +274,12 @@ You're "done" when:
 
 ## README (Feature): Repo Scan for APIM + Header Attribution (InfoJP Sandbox)
 
-**📑 Navigation**: See **[INDEX.md](./INDEX.md)** for complete documentation map  
-**🎯 Quick Start**: See **[00-SUMMARY.md](./00-SUMMARY.md)** for current status and next steps
+**?? Navigation**: See **[INDEX.md](./INDEX.md)** for complete documentation map  
+**?? Quick Start**: See **[00-SUMMARY.md](./00-SUMMARY.md)** for current status and next steps
 
 ---
 
-## ⚠️ CRITICAL ARCHITECTURAL FINDING
+## ?? CRITICAL ARCHITECTURAL FINDING
 
 **DO NOT attempt to refactor Azure SDKs to HTTP wrappers for APIM integration.**
 
@@ -271,14 +292,14 @@ The codebase uses **150+ direct Azure SDK calls** (AsyncAzureOpenAI, SearchClien
 - **Refactoring Risk**: Very High (core business logic changes)
 
 ### The Recommended Solution
-✅ **Backend Middleware + Azure Monitor** (1 week, low risk):
+? **Backend Middleware + Azure Monitor** (1 week, low risk):
 - Add FastAPI middleware to extract APIM-injected governance headers
 - Log request metadata + correlation IDs to Cosmos DB
 - Leverage existing Azure Monitor for SDK call tracking
 - Match APIM logs + SDK logs for end-to-end cost attribution
 - **No SDK refactoring required**
 
-**👉 See [CRITICAL-FINDINGS-SDK-REFACTORING.md](./CRITICAL-FINDINGS-SDK-REFACTORING.md) for detailed analysis, effort estimation, and implementation roadmap.**
+**?? See [CRITICAL-FINDINGS-SDK-REFACTORING.md](./CRITICAL-FINDINGS-SDK-REFACTORING.md) for detailed analysis, effort estimation, and implementation roadmap.**
 
 ---
 
@@ -288,8 +309,8 @@ This feature is the **first step** toward putting **APIM in front of InfoJP** an
 
 Before changing infrastructure or code, we will **scan the repo** to produce an evidence-based inventory of:
 
-* all **frontend → backend** API calls (including streaming)
-* all **backend → downstream** HTTP calls (OpenAI, Search, Storage, external endpoints, etc.)
+* all **frontend ? backend** API calls (including streaming)
+* all **backend ? downstream** HTTP calls (OpenAI, Search, Storage, external endpoints, etc.)
 * all existing auth/session patterns
 * the best insertion points for **APIM gateway base URL** and **header propagation**
 
@@ -320,7 +341,7 @@ This scan produces a **ground-truth map** that later becomes:
 * No auth refactor
 * No i18n/a11y work
 * No ingestion design changes
-* No "vibe" architecture—only evidence-backed findings
+* No "vibe" architecture?only evidence-backed findings
 
 ---
 
@@ -392,59 +413,59 @@ The following evidence documents have been produced from the base-platform scan:
 
 ### Inspection Workflow
 - **[evidences/03-inspection-priority.md](./evidences/03-inspection-priority.md)** - Top 10 files to read next
-  - Priority order: app.py → api.ts → approaches → config
+  - Priority order: app.py ? api.ts ? approaches ? config
   - Evidence extraction templates
   - APIM implication analysis per file
   - Phase-by-phase inspection workflow
 
 ---
 
-## 📁 Repository Structure
+## ?? Repository Structure
 
 ### APIM Documentation Folder Layout
 
 ```
 docs/eva-foundation/projects/11-MS-InfoJP/apim/
-├── 📋 README.md ..................... Project overview, 5-phase process, MVP definition
-├── 📊 STATUS.md ..................... Current status, phases complete, timeline, team
-├── 📖 QUICK-REFERENCE.md ............ Quick reference card (endpoints, headers, timeline)
-├── 🎯 PLAN.md ....................... Master execution plan (Phases 3-5, 750+ lines)
-├── ⚠️ CRITICAL-FINDINGS-SDK-REFACTORING.md ... Architecture decision (DO NOT refactor SDKs)
-│
-├── 📂 evidences/ .................... Phase 1 deliverables (40+ hours)
-│   ├── 01-stack-evidence.md ......... Tech stack identification (React, FastAPI, Azure SDKs)
-│   ├── 02-scan-command-plan.md ...... Ripgrep search patterns (20+ commands)
-│   └── 03-inspection-priority.md .... File reading order (top 10 files)
-│
-├── 📂 docs/apim-scan/ ............... Phase 2 deliverables (172+ hours, 8,000+ lines)
-│   ├── INDEX.md ..................... Document navigation and phase status
-│   ├── SUMMARY.md ................... Phase 2 summary and findings
-│   ├── 01-api-call-inventory.md ..... 20+ HTTP endpoints with evidence (322 lines)
-│   ├── 02-auth-and-identity.md ...... Auth analysis (current: no user auth) (454 lines)
-│   ├── 03-config-and-base-urls.md ... Environment variables and config mapping
-│   ├── 04-streaming-analysis.md ..... SSE implementation (3 streaming endpoints)
-│   ├── 05-header-contract-draft.md .. 7 governance headers specification (714 lines)
-│   ├── APPENDIX-A-Azure-SDK-Clients.md ... SDK usage deep dive (150+ calls)
-│   └── APPENDIX-SCAN-SUMMARY.md ..... Scan execution results and methodology
-│
-├── 📂 diagrams/ ..................... Architecture & flow diagrams
-│   ├── 01-current-architecture.md ... Current state (no APIM, no auth)
-│   ├── 02-target-apim-architecture.md ... Target state with APIM + middleware
-│   ├── 03-header-flow.md ............ Header propagation sequence
-│   └── 04-authentication-flow.md .... JWT validation + authorization flow
-│
-├── 📂 (Phase 3-5 deliverables - planned)
-│   ├── 09-openapi-spec.yaml ......... OpenAPI specification for APIM import
-│   ├── 10-apim-policies.xml ......... APIM policy definitions (JWT, rate limit, headers)
-│   ├── 10-apim-policies.md .......... Policy explanation and rationale
-│   └── 11-deployment-plan.md ........ APIM deployment and cutover strategy
-│
-├── 00-SUMMARY.md .................... Phase 1 completion summary
-├── 00-NEXT-STEPS.md ................. Immediate action items (team kickoff)
-├── COMPLETION-FINDINGS-DOCUMENTED.md ... Phase 2 completion summary
-├── COMPLETION-REPORT-SDK-SCAN.md .... SDK scan results
-├── COMPREHENSIVE-APIM-GUIDE-COMPLETE.md ... Comprehensive guide
-└── START-HERE-CRITICAL-FINDINGS.md .. Critical findings quick start
+??? ?? README.md ..................... Project overview, 5-phase process, MVP definition
+??? ?? STATUS.md ..................... Current status, phases complete, timeline, team
+??? ?? QUICK-REFERENCE.md ............ Quick reference card (endpoints, headers, timeline)
+??? ?? PLAN.md ....................... Master execution plan (Phases 3-5, 750+ lines)
+??? ?? CRITICAL-FINDINGS-SDK-REFACTORING.md ... Architecture decision (DO NOT refactor SDKs)
+?
+??? ?? evidences/ .................... Phase 1 deliverables (40+ hours)
+?   ??? 01-stack-evidence.md ......... Tech stack identification (React, FastAPI, Azure SDKs)
+?   ??? 02-scan-command-plan.md ...... Ripgrep search patterns (20+ commands)
+?   ??? 03-inspection-priority.md .... File reading order (top 10 files)
+?
+??? ?? docs/apim-scan/ ............... Phase 2 deliverables (172+ hours, 8,000+ lines)
+?   ??? INDEX.md ..................... Document navigation and phase status
+?   ??? SUMMARY.md ................... Phase 2 summary and findings
+?   ??? 01-api-call-inventory.md ..... 20+ HTTP endpoints with evidence (322 lines)
+?   ??? 02-auth-and-identity.md ...... Auth analysis (current: no user auth) (454 lines)
+?   ??? 03-config-and-base-urls.md ... Environment variables and config mapping
+?   ??? 04-streaming-analysis.md ..... SSE implementation (3 streaming endpoints)
+?   ??? 05-header-contract-draft.md .. 7 governance headers specification (714 lines)
+?   ??? APPENDIX-A-Azure-SDK-Clients.md ... SDK usage deep dive (150+ calls)
+?   ??? APPENDIX-SCAN-SUMMARY.md ..... Scan execution results and methodology
+?
+??? ?? diagrams/ ..................... Architecture & flow diagrams
+?   ??? 01-current-architecture.md ... Current state (no APIM, no auth)
+?   ??? 02-target-apim-architecture.md ... Target state with APIM + middleware
+?   ??? 03-header-flow.md ............ Header propagation sequence
+?   ??? 04-authentication-flow.md .... JWT validation + authorization flow
+?
+??? ?? (Phase 3-5 deliverables - planned)
+?   ??? 09-openapi-spec.yaml ......... OpenAPI specification for APIM import
+?   ??? 10-apim-policies.xml ......... APIM policy definitions (JWT, rate limit, headers)
+?   ??? 10-apim-policies.md .......... Policy explanation and rationale
+?   ??? 11-deployment-plan.md ........ APIM deployment and cutover strategy
+?
+??? 00-SUMMARY.md .................... Phase 1 completion summary
+??? 00-NEXT-STEPS.md ................. Immediate action items (team kickoff)
+??? COMPLETION-FINDINGS-DOCUMENTED.md ... Phase 2 completion summary
+??? COMPLETION-REPORT-SDK-SCAN.md .... SDK scan results
+??? COMPREHENSIVE-APIM-GUIDE-COMPLETE.md ... Comprehensive guide
+??? START-HERE-CRITICAL-FINDINGS.md .. Critical findings quick start
 ```
 
 ### Document Purpose & Audience
@@ -537,25 +558,25 @@ graph TD
 ### Key Evidence Trail
 
 **Decision Flow**:
-1. **Stack Evidence** → evidences/01-stack-evidence.md
+1. **Stack Evidence** ? evidences/01-stack-evidence.md
    - Identified: 150+ Azure SDK calls, no raw HTTP
    
-2. **API Inventory** → docs/apim-scan/01-api-call-inventory.md
+2. **API Inventory** ? docs/apim-scan/01-api-call-inventory.md
    - Documented: 20+ endpoints, 3 SSE streaming
    
-3. **Auth Analysis** → docs/apim-scan/02-auth-and-identity.md
+3. **Auth Analysis** ? docs/apim-scan/02-auth-and-identity.md
    - Found: No user authentication, all endpoints public
    
-4. **SDK Deep Dive** → docs/apim-scan/APPENDIX-A-Azure-SDK-Clients.md
+4. **SDK Deep Dive** ? docs/apim-scan/APPENDIX-A-Azure-SDK-Clients.md
    - Measured: 150+ SDK integration points across 15+ files
    
-5. **Critical Finding** → CRITICAL-FINDINGS-SDK-REFACTORING.md
+5. **Critical Finding** ? CRITICAL-FINDINGS-SDK-REFACTORING.md
    - Decided: DO NOT refactor (270-410 hours saved)
    
-6. **Master Plan** → PLAN.md
+6. **Master Plan** ? PLAN.md
    - Designed: Backend Middleware approach (20-30 hours)
 
-7. **Architecture Diagrams** → diagrams/
+7. **Architecture Diagrams** ? diagrams/
    - Visualized: Current state, target state, flows
 
 ---

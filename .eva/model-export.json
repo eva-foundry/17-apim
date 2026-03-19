@@ -1,0 +1,826 @@
+{
+  "meta": {
+    "schema": "eva.export-to-model.v1",
+    "generated_at": "2026-03-08T01:25:42.704Z",
+    "project_id": "17-apim",
+    "source_files": [
+      "STATUS.md",
+      "PLAN.md"
+    ],
+    "discovery_path": "C:\\eva-foundry\\eva-foundry\\17-apim\\.eva\\discovery.json",
+    "reconciliation_path": "C:\\eva-foundry\\eva-foundry\\17-apim\\.eva\\reconciliation.json",
+    "layers_selected": [
+      "wbs",
+      "evidence",
+      "decisions",
+      "risks"
+    ]
+  },
+  "wbs": [
+    {
+      "id": "WBS-17apim",
+      "project_id": "17-apim",
+      "parent_wbs_id": null,
+      "label": "Project: 17-apim",
+      "level": "epic",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 54,
+      "points_done": 0,
+      "stories_total": 18,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F01",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "?? PROJECT STATUS DASHBOARD",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 12,
+      "points_done": 0,
+      "stories_total": 4,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-S001",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F01",
+      "label": "Phase Completion Matrix",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-01-001"
+    },
+    {
+      "id": "WBS-S002",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F01",
+      "label": "Critical Findings Impact",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-01-002"
+    },
+    {
+      "id": "WBS-S003",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F01",
+      "label": "Current Blockers & Risks",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-01-003"
+    },
+    {
+      "id": "WBS-S004",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F01",
+      "label": "Next Milestone: Phase 3A Kickoff",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-01-004"
+    },
+    {
+      "id": "WBS-F02",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Executive Summary",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F03",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Phase 3: APIM Design & Setup (2-3 weeks, 44-60 hours)",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 12,
+      "points_done": 0,
+      "stories_total": 4,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-S005",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F03",
+      "label": "Phase 3A: Generate OpenAPI Specification",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-03-001"
+    },
+    {
+      "id": "WBS-S006",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F03",
+      "label": "Phase 3B: Design APIM Policies",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-03-002"
+    },
+    {
+      "id": "WBS-S007",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F03",
+      "label": "Phase 3C: Create Deployment & Cutover Plan",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-03-003"
+    },
+    {
+      "id": "WBS-S008",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F03",
+      "label": "Phase 3 Summary Table",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-03-004"
+    },
+    {
+      "id": "WBS-F04",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Phase 4: Backend Middleware & Header Propagation (2 weeks, 40-56 hours)",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 15,
+      "points_done": 0,
+      "stories_total": 5,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-S009",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F04",
+      "label": "Phase 4A: Governance Logging Middleware",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-04-001"
+    },
+    {
+      "id": "WBS-S010",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F04",
+      "label": "Phase 4B: Authorization Enforcement Middleware",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-04-002"
+    },
+    {
+      "id": "WBS-S011",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F04",
+      "label": "Phase 4C: Cosmos DB Schema Extension",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-04-003"
+    },
+    {
+      "id": "WBS-S012",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F04",
+      "label": "Phase 4D: Cost Attribution Queries (KQL/SQL)",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-04-004"
+    },
+    {
+      "id": "WBS-S013",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F04",
+      "label": "Phase 4 Summary Table",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-04-005"
+    },
+    {
+      "id": "WBS-F05",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Phase 5: Testing & Cutover (1 week, 40-56 hours)",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 15,
+      "points_done": 0,
+      "stories_total": 5,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-S014",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F05",
+      "label": "Phase 5A: Integration Testing",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-05-001"
+    },
+    {
+      "id": "WBS-S015",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F05",
+      "label": "Phase 5B: Performance Testing",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-05-002"
+    },
+    {
+      "id": "WBS-S016",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F05",
+      "label": "Phase 5C: User Acceptance Testing (UAT)",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-05-003"
+    },
+    {
+      "id": "WBS-S017",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F05",
+      "label": "Phase 5D: Go-Live Cutover & Monitoring",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-05-004"
+    },
+    {
+      "id": "WBS-S018",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-F05",
+      "label": "Phase 5 Summary Table",
+      "level": "user_story",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 3,
+      "points_done": 0,
+      "acceptance_criteria": null,
+      "original_story_id": "F17-05-005"
+    },
+    {
+      "id": "WBS-F06",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Master Timeline & Sequencing",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F07",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Critical Path & Risk Mitigation",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F08",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Definition of Done (Project-Level)",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F09",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Acceptance Criteria",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F10",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Owner & Team Composition",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F11",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Success Metrics (Post-Go-Live)",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F12",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Next Steps (Immediate)",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    },
+    {
+      "id": "WBS-F13",
+      "project_id": "17-apim",
+      "parent_wbs_id": "WBS-17apim",
+      "label": "Reference Documents",
+      "level": "feature",
+      "status": "planned",
+      "percent_complete": 0,
+      "points_total": 0,
+      "points_done": 0,
+      "stories_total": 0,
+      "stories_done": 0
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EVD-17apim-D3-001",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-01-001",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.706Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-002",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-01-002",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.706Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-003",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-01-003",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.706Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-004",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-01-004",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.706Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-005",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-03-001",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.706Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-006",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-03-002",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.706Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-007",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-03-003",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-008",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-03-004",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-009",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-04-001",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-010",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-04-002",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-011",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-04-003",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-012",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-04-004",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-013",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-04-005",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-014",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-05-001",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-015",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-05-002",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-016",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-05-003",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-017",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-05-004",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    },
+    {
+      "id": "EVD-17apim-D3-018",
+      "project_id": "17-apim",
+      "phase": "D3",
+      "story_id": "F17-05-005",
+      "status": "documented",
+      "test_count": 0,
+      "test_passed": 0,
+      "coverage": null,
+      "timestamp": "2026-03-08T01:25:42.707Z",
+      "actor": "agent:veritas",
+      "source": "veritas-export",
+      "evidence_artifacts": [
+        {
+          "path": "HOUSEKEEPING-SCRIPT.ps1",
+          "type": "code",
+          "is_test": false
+        }
+      ],
+      "commit_refs": []
+    }
+  ],
+  "decisions": [],
+  "risks": [],
+  "summary": {
+    "wbs_count": 32,
+    "evidence_count": 18,
+    "decisions_count": 0,
+    "risks_count": 0,
+    "mti_score": null
+  }
+}

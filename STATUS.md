@@ -2,29 +2,29 @@
 
 **Project**: MS-InfoJP APIM Integration for Cost Attribution & Governance  
 **Last Updated**: 2026-02-06  
-**Status**: 🟢 **Phase 3A Complete - OpenAPI Spec Extracted**
+**Status**: ?? **Phase 3A Complete - OpenAPI Spec Extracted**
 
-**Progress**: ✅ Phase 3A OpenAPI Generation Complete (45 minutes - automation-driven)
-- ✅ Phase 2 Complete: All 5 sub-phases finished (API Inventory, RBAC, EnvVars, Streaming, SDK)
-- ✅ **Phase 3A Complete**: OpenAPI spec extracted (39 endpoints, 124.8 KB)
-- ⏳ Phase 3B Next: APIM Policy Design (JWT, rate-limit, headers)
+**Progress**: ? Phase 3A OpenAPI Generation Complete (45 minutes - automation-driven)
+- ? Phase 2 Complete: All 5 sub-phases finished (API Inventory, RBAC, EnvVars, Streaming, SDK)
+- ? **Phase 3A Complete**: OpenAPI spec extracted (39 endpoints, 124.8 KB)
+- ? Phase 3B Next: APIM Policy Design (JWT, rate-limit, headers)
 
-**Validation**: ✅ Phase 3A deliverable verified - all acceptance criteria met
-- ✅ OpenAPI 3.1.0 spec extracted from FastAPI backend
-- ✅ 39 endpoints documented (exceeds Phase 2 estimate of 27)
-- ✅ Degraded mode extraction successful (no Azure dependencies)
-- ✅ Completion report: [PHASE-3A-COMPLETION.md](./PHASE-3A-COMPLETION.md)
+**Validation**: ? Phase 3A deliverable verified - all acceptance criteria met
+- ? OpenAPI 3.1.0 spec extracted from FastAPI backend
+- ? 39 endpoints documented (exceeds Phase 2 estimate of 27)
+- ? Degraded mode extraction successful (no Azure dependencies)
+- ? Completion report: [PHASE-3A-COMPLETION.md](./PHASE-3A-COMPLETION.md)
 
 ---
 
 ## Executive Summary
 
 **Phases 1-2 Achievement** [FACT: 00-SUMMARY.md:1-20]:
-- ✅ **212+ hours** of research and analysis complete
-- ✅ **145+ evidence items** documented across 23 files
-- ✅ **8,000+ lines** of technical documentation
-- ✅ **20+ API endpoints** inventoried with evidence
-- ✅ **Critical architectural finding**: SDK refactoring not viable (270-410 hours saved)
+- ? **212+ hours** of research and analysis complete
+- ? **145+ evidence items** documented across 23 files
+- ? **8,000+ lines** of technical documentation
+- ? **20+ API endpoints** inventoried with evidence
+- ? **Critical architectural finding**: SDK refactoring not viable (270-410 hours saved)
 
 **Current State** [FACT: PLAN.md:1-50]:
 - Full technical foundation established
@@ -33,55 +33,55 @@
 - Ready to proceed with Phase 3 (APIM design) and Phase 4 (middleware implementation)
 
 **Timeline to MVP** [ESTIMATE: PLAN.md:540-570]:
-- **Sequential (Option A)**: 5-6 weeks (Phases 3→4→5 in order)
+- **Sequential (Option A)**: 5-6 weeks (Phases 3?4?5 in order)
 - **Parallel (Option B - RECOMMENDED)**: 3-4 weeks (Phases 3+4 parallel)
 
 ---
 
-## Phases 1-2: Analysis Complete ✅
+## Phases 1-2: Analysis Complete ?
 
 ### Phase 1: Stack Evidence (40+ hours) [FACT: 00-SUMMARY.md:22-35]
 
 **Deliverables** (3 files in [evidences/](./evidences/)):
-1. ✅ [01-stack-evidence.md](./evidences/01-stack-evidence.md) - Tech stack identification
+1. ? [01-stack-evidence.md](./evidences/01-stack-evidence.md) - Tech stack identification
    - Frontend: React 18.3.1 + TypeScript 4.9.5 + Vite 5.4.11
    - Backend: Python FastAPI 0.115.0 + Azure SDKs
    - Streaming: SSE via ndjson-readablestream
    
-2. ✅ [02-scan-command-plan.md](./evidences/02-scan-command-plan.md) - Ripgrep search patterns
+2. ? [02-scan-command-plan.md](./evidences/02-scan-command-plan.md) - Ripgrep search patterns
    - 20+ search commands for route discovery, SDK usage, config
 
-3. ✅ [03-inspection-priority.md](./evidences/03-inspection-priority.md) - File reading order
+3. ? [03-inspection-priority.md](./evidences/03-inspection-priority.md) - File reading order
    - Top 10 files identified: app.py, api.ts, approaches, config
 
 ### Phase 2: Comprehensive Analysis (172+ hours) [FACT: 00-SUMMARY.md:36-52]
 
 **Deliverables** (8 files in [docs/apim-scan/](./docs/apim-scan/)):
-1. ✅ [01-api-call-inventory.md](./docs/apim-scan/01-api-call-inventory.md) (322 lines)
+1. ? [01-api-call-inventory.md](./docs/apim-scan/01-api-call-inventory.md) (322 lines)
    - **20+ HTTP endpoints** documented with file:line evidence
    - **3 streaming endpoints** (/chat, /stream, /tdstream) - SSE implementation
    - **7 file management endpoints** (upload, delete, status, tags, folders)
    - **5 configuration endpoints** (info, warnings, feature flags, titles)
    - **5 specialized endpoints** (math, CSV assistants, citations)
 
-2. ✅ [02-auth-and-identity.md](./docs/apim-scan/02-auth-and-identity.md) (454 lines)
+2. ? [02-auth-and-identity.md](./docs/apim-scan/02-auth-and-identity.md) (454 lines)
    - **Critical Gap**: No user authentication currently implemented
    - All 20+ endpoints are publicly accessible (no JWT validation)
-   - Service-to-service auth works (Managed Identity → Azure services)
+   - Service-to-service auth works (Managed Identity ? Azure services)
    - Token flow documented with SDK usage patterns
 
-3. ✅ [03-config-and-base-urls.md](./docs/apim-scan/03-config-and-base-urls.md)
+3. ? [03-config-and-base-urls.md](./docs/apim-scan/03-config-and-base-urls.md)
    - **47 environment variables** documented (32 core + 15 operational: KB field mappings, query/translation settings, Bing search config)
    - Service endpoints mapping
    - APIM configuration requirements
 
-4. ✅ [04-streaming-analysis.md](./docs/apim-scan/04-streaming-analysis.md)
+4. ? [04-streaming-analysis.md](./docs/apim-scan/04-streaming-analysis.md)
    - SSE implementation via FastAPI StreamingResponse
    - ndjson format for /chat endpoint
    - text/event-stream for /stream and /tdstream
    - APIM buffering requirements (must disable for real-time)
 
-5. ✅ [05-header-contract-draft.md](./docs/apim-scan/05-header-contract-draft.md) (714 lines)
+5. ? [05-header-contract-draft.md](./docs/apim-scan/05-header-contract-draft.md) (714 lines)
    - **7 governance headers** specified:
      - X-Correlation-Id (request tracing)
      - X-Run-Id (batch/run tracking)
@@ -90,24 +90,24 @@
      - X-Cost-Center (cost allocation - optional)
      - X-Project-Id (project isolation - optional)
      - X-Ingestion-Variant (A/B testing - optional)
-   - Injection points: APIM inbound policy → Backend middleware → Cosmos DB
+   - Injection points: APIM inbound policy ? Backend middleware ? Cosmos DB
    - **Current state**: No headers extracted or propagated
 
-6. ✅ [APPENDIX-A-Azure-SDK-Clients.md](./docs/apim-scan/APPENDIX-A-Azure-SDK-Clients.md)
+6. ? [APPENDIX-A-Azure-SDK-Clients.md](./docs/apim-scan/APPENDIX-A-Azure-SDK-Clients.md)
    - Detailed SDK usage analysis (AsyncAzureOpenAI, SearchClient, etc.)
    - 150+ SDK integration points identified
 
-7. ✅ [APPENDIX-SCAN-SUMMARY.md](./docs/apim-scan/APPENDIX-SCAN-SUMMARY.md)
+7. ? [APPENDIX-SCAN-SUMMARY.md](./docs/apim-scan/APPENDIX-SCAN-SUMMARY.md)
    - Scan execution results
    - Evidence collection methodology
 
-8. ✅ [INDEX.md](./docs/apim-scan/INDEX.md) + [SUMMARY.md](./docs/apim-scan/SUMMARY.md)
+8. ? [INDEX.md](./docs/apim-scan/INDEX.md) + [SUMMARY.md](./docs/apim-scan/SUMMARY.md)
    - Navigation and document index
    - Phase completion status
 
 ### Critical Findings [FACT: CRITICAL-FINDINGS-SDK-REFACTORING.md:12-35]
 
-**⚠️ Architecture Decision**: DO NOT refactor Azure SDKs to HTTP wrappers
+**?? Architecture Decision**: DO NOT refactor Azure SDKs to HTTP wrappers
 
 **The Finding**:
 - **150+ direct Azure SDK calls** across 15+ Python files (AsyncAzureOpenAI, SearchClient, BlobServiceClient, CosmosClient)
@@ -121,18 +121,18 @@
 - ROI: **Negative**
 
 **Recommended Solution** [FACT: CRITICAL-FINDINGS-SDK-REFACTORING.md:202-250]:
-- ✅ Backend Middleware + Azure Monitor (20-30 hours, 1 week)
+- ? Backend Middleware + Azure Monitor (20-30 hours, 1 week)
 - Add FastAPI middleware to extract APIM headers
 - Log governance metadata to Cosmos DB
 - Leverage Azure Monitor for SDK call tracking
 - Match APIM logs + SDK logs for cost attribution
 - **No SDK refactoring required**
 
-**Decision**: Proceed with Backend Middleware approach → saves 250-380 hours
+**Decision**: Proceed with Backend Middleware approach ? saves 250-380 hours
 
 ---
 
-## 🎯 WHAT TO DO NEXT (Immediate Actions)
+## ?? WHAT TO DO NEXT (Immediate Actions)
 
 ### Week of February 10, 2026
 
@@ -216,7 +216,7 @@
 
 2. [ ] **Authorization Enforcement** (Phase 4B: 8-12 hrs)
    - JWT validation (Entra ID `oid` extraction)
-   - User → project mapping (Cosmos DB lookup)
+   - User ? project mapping (Cosmos DB lookup)
    - Route guards (@require_auth, @require_project_access)
    - 401/403 responses for unauthorized access
 
@@ -244,7 +244,7 @@
 
 2. [ ] **Load Testing** (Phase 5B: 8-12 hrs)
    - Performance baseline vs. with APIM+middleware
-   - P95 latency <2s, throughput ≥100 req/sec
+   - P95 latency <2s, throughput ?100 req/sec
    - Error rate <0.1%
 
 3. [ ] **UAT** (Phase 5C: 12-16 hrs)
@@ -277,7 +277,7 @@ Week 5:   Phase 5 (Testing & Deployment)
 ### Option B: Parallel - RECOMMENDED (Faster, 3-4 weeks)
 ```
 Week 1-2: Phase 3 + Phase 4 (parallel)
-  - Phase 3B finishes Week 1 → Phase 4A uses finalized header list
+  - Phase 3B finishes Week 1 ? Phase 4A uses finalized header list
   - Phase 3A/3C and Phase 4C/4D run independently
 Week 3:   Phase 5 (Testing & Deployment)
 ```
@@ -290,9 +290,9 @@ Week 3:   Phase 5 (Testing & Deployment)
 ## Critical Path & Dependencies [ESTIMATE: PLAN.md:605-635]
 
 **Blocking Path**:
-1. Phase 3A (OpenAPI spec) → Phase 3B (APIM policies) → Phase 4A (middleware expects header list)
-2. Phase 4C (Cosmos schema) → Phase 4A (middleware writes to DB)
-3. Phase 4A + 4B + 4D → Phase 5 (testing requires all components)
+1. Phase 3A (OpenAPI spec) ? Phase 3B (APIM policies) ? Phase 4A (middleware expects header list)
+2. Phase 4C (Cosmos schema) ? Phase 4A (middleware writes to DB)
+3. Phase 4A + 4B + 4D ? Phase 5 (testing requires all components)
 
 **High-Risk Areas**:
 1. **User Auth** (Phase 4B) - Currently missing entirely. Adding JWT validation requires thorough testing.
@@ -305,11 +305,11 @@ Week 3:   Phase 5 (Testing & Deployment)
 ## Key Metrics & Success Criteria [FACT: PLAN.md:650-667]
 
 ### MVP Definition [FACT: README.md:400-450]
-1. ✅ All UI calls routed through APIM gateway
-2. ✅ Headers propagated and stored (X-Correlation-Id, X-Run-Id, X-Project-Id, X-User-Id, etc.)
-3. ✅ Cost attribution reports (OpenAI tokens, Search queries, Storage usage per run/variant)
-4. ✅ Authorization enforced (user can only call assigned projects)
-5. ✅ Governance metadata persisted to Cosmos DB
+1. ? All UI calls routed through APIM gateway
+2. ? Headers propagated and stored (X-Correlation-Id, X-Run-Id, X-Project-Id, X-User-Id, etc.)
+3. ? Cost attribution reports (OpenAI tokens, Search queries, Storage usage per run/variant)
+4. ? Authorization enforced (user can only call assigned projects)
+5. ? Governance metadata persisted to Cosmos DB
 
 ### Technical Acceptance
 - [ ] OpenAPI spec validated by APIM (imports without errors)
@@ -317,14 +317,14 @@ Week 3:   Phase 5 (Testing & Deployment)
 - [ ] 20+ endpoints routed correctly (inventory verified)
 - [ ] Streaming endpoints (SSE) pass through without buffering
 - [ ] Headers extracted, logged, queryable from Cosmos
-- [ ] Cost queries produce expected results (±10% of Azure bill)
+- [ ] Cost queries produce expected results (?10% of Azure bill)
 - [ ] Authorization working (401/403 responses, project access enforced)
 
 ### Operational Acceptance
 - [ ] APIM instance deployed, scaled, monitored
 - [ ] Rollback procedures tested and documented
 - [ ] Cost dashboard operational
-- [ ] Performance: P95 latency <2s, throughput ≥100 req/sec
+- [ ] Performance: P95 latency <2s, throughput ?100 req/sec
 - [ ] Error rate <0.1% within 1 hour post-cutover
 
 ### Stakeholder Acceptance
@@ -378,9 +378,9 @@ Week 3:   Phase 5 (Testing & Deployment)
 ## Document Index
 
 **Critical - Read First**:
-- ⚠️ [CRITICAL-FINDINGS-SDK-REFACTORING.md](./CRITICAL-FINDINGS-SDK-REFACTORING.md) - Architecture decision
-- 📋 [PLAN.md](./PLAN.md) - Master execution plan (Phases 3-5)
-- 📄 [README.md](./README.md) - 5-phase APIM process, MVP definition
+- ?? [CRITICAL-FINDINGS-SDK-REFACTORING.md](./CRITICAL-FINDINGS-SDK-REFACTORING.md) - Architecture decision
+- ?? [PLAN.md](./PLAN.md) - Master execution plan (Phases 3-5)
+- ?? [README.md](./README.md) - 5-phase APIM process, MVP definition
 
 **Phase 1-2 Deliverables**:
 - [evidences/](./evidences/) - Stack evidence, scan commands, inspection priorities (3 files)
@@ -401,3 +401,14 @@ Week 3:   Phase 5 (Testing & Deployment)
 ---
 
 **Last Updated**: 2026-01-28 | **Status**: Ready for Phase 3 Execution
+
+
+---
+
+## 2026-03-03 -- Re-primed by agent:copilot
+
+<!-- eva-primed-status -->
+
+Data model: GET http://localhost:8010/model/projects/17-apim
+29-foundry agents: C:\eva-foundry\eva-foundation\29-foundry\agents\
+48-eva-veritas: run audit_repo MCP tool

@@ -2,8 +2,8 @@
   "meta": {
     "schema": "eva.reconciliation.v2",
     "generated_at": "2026-02-25T06:37:11.658Z",
-    "repo": "C:\\AICOE\\eva-foundation\\17-apim",
-    "discovery_path": "C:\\AICOE\\eva-foundation\\17-apim\\.eva\\discovery.json"
+    "repo": "C:\\eva-foundry\\eva-foundation\\17-apim",
+    "discovery_path": "C:\\eva-foundry\\eva-foundation\\17-apim\\.eva\\discovery.json"
   },
   "coverage": {
     "stories_total": 18,

@@ -1,0 +1,18 @@
+{
+  "steps": [
+    "copilot-instructions:REPAIRED",
+    "PLAN.md:SKIP-MANAGED-ONLY",
+    "STATUS.md:SKIP-MANAGED-ONLY",
+    "ACCEPTANCE.md:SKIP-MANAGED-ONLY",
+    "README.md:SKIP-MANAGED-ONLY",
+    "PROJECT-ORGANIZATION.md:SKIP",
+    "API-SYNC:SKIP-MANAGED-ONLY",
+    "EVIDENCE:SKIP-MANAGED-ONLY"
+  ],
+  "before_version": "4.3.0",
+  "dry_run": false,
+  "project": "17-apim",
+  "after_version": "6.2.0",
+  "copilot_step": "copilot-instructions:REPAIRED",
+  "timestamp": "2026-03-15T02:51:53+00:00"
+}
