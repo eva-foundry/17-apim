@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-03-20T10:10:03-04:00",
+  "ado_org": "https://dev.azure.com/marcopresta",
+  "ado_project": "eva-poc",
+  "github_repo": "eva-foundry/17-apim",
+  "project_maturity": "active",
+
+  "epic": {
+    "skip_if_id_exists": null,
+    "type": "Epic",
+    "title": "APIM Thread Governance Surface",
+    "description": "Governed ingress and routing for dependency-aware control-plane orchestration. Extends APIM policy, product, and header contracts so thread identity, correlation, and policy decisions remain stable across 33-eva-brain-v2, 38-ado-poc, 40-eva-control-plane, and 14-az-finops.",
+    "tags": "apim;17;thread-governance",
+    "area_path": "eva-poc"
+  },
+
+  "features": [
+    {
+      "id_hint": "apim-thread-headers",
+      "type": "Feature",
+      "title": "Thread-Aware Header and Policy Contract",
+      "description": "Add APIM policy support for x-eva-thread-id, x-eva-lane-id, x-eva-correlation-id, and gate decision headers so threaded execution remains governed and observable.",
+      "tags": "apim;thread-headers",
+      "parent": "epic"
+    },
+    {
+      "id_hint": "apim-thread-routes",
+      "type": "Feature",
+      "title": "Thread Projection and Command Routes",
+      "description": "Expose APIM-managed routes for thread dashboards, ready queues, critical path views, and governed command surfaces backed by brain-v2 and control-plane APIs.",
+      "tags": "apim;thread-routes",
+      "parent": "epic"
+    }
+  ],
+
+  "user_stories": [
+    {
+      "id_hint": "apim-thread-wi-1",
+      "type": "Product Backlog Item",
+      "title": "[APIM-THREAD-WI-1] APIM policy injects and normalizes thread identity headers",
+      "acceptance_criteria": "APIM enforces x-eva-thread-id, x-eva-lane-id, x-eva-correlation-id, and decision metadata headers. Downstream services receive stable thread context regardless of caller origin.",
+      "tags": "apim;thread-headers;apim-thread-wi-1",
+      "iteration_path": "eva-poc\\Sprint-Backlog",
+      "state": "New",
+      "parent": "apim-thread-headers",
+      "evidence": { "test_count": null, "coverage_pct": null, "notes": "Required for consistent cross-plane thread observability and governance." }
+    },
+    {
+      "id_hint": "apim-thread-wi-2",
+      "type": "Product Backlog Item",
+      "title": "[APIM-THREAD-WI-2] APIM publishes governed thread projection routes",
+      "acceptance_criteria": "Thread projection routes are exposed through APIM for dashboards and operator tools. Routing preserves auth, rate limiting, and decision-gate policies while shielding internal service topology.",
+      "tags": "apim;thread-routes;apim-thread-wi-2",
+      "iteration_path": "eva-poc\\Sprint-Backlog",
+      "state": "New",
+      "parent": "apim-thread-routes",
+      "evidence": { "test_count": null, "coverage_pct": null, "notes": "Connects thread APIs to operator-facing surfaces without bypassing APIM governance." }
+    }
+  ],
+
+  "sprints_needed": [
+    { "name": "Sprint-Backlog", "start_date": null, "finish_date": null }
+  ]
+}
